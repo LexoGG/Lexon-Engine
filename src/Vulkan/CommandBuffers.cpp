@@ -1,7 +1,9 @@
+﻿#include "../Core/Application.h"
+#include "../Core/Config.h"
+#include "../Vulkan/DescriptorManager.h"
 #include "CommandBuffers.h"
-
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 
 void CommandBuffers::init(VulkanContext& context, Swapchain& swapchain) {
     createCommandPool(context);
@@ -50,9 +52,19 @@ void CommandBuffers::createCommandBuffers(VulkanContext& context) {
     }
 }
 
-void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, VertexBuffer& vertexBuffer, uint32_t imageIndex, uint32_t frameIndex) {
+void CommandBuffers::recordCommandBuffer(
+    VulkanContext& context,
+    Swapchain& swapchain,
+    Pipeline& pipeline,
+    VertexBuffer& vertexBuffer,
+    DescriptorManager& descriptorManager,  // ✅ Añadir esto
+    uint32_t imageIndex,
+    uint32_t frameIndex
+)
+{
 
-    VkCommandBuffer commandBuffer = commandBuffers[frameIndex];
+    VkCommandBuffer commandBuffer = this->commandBuffers[frameIndex];
+
 
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -89,8 +101,14 @@ void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swap
 
     vertexBuffer.bind(commandBuffer);
 
-
-
+    vkCmdBindDescriptorSets(
+        commandBuffer,
+        VK_PIPELINE_BIND_POINT_GRAPHICS,
+        pipeline.getPipelineLayout(),
+        0, 1,
+        &descriptorManager.getSet(frameIndex),
+        0, nullptr
+    );
     // Viewport
     VkViewport viewport{};
     viewport.x = 0.0f;
@@ -112,7 +130,7 @@ void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swap
 
 
 
-    // �Dibuja!
+    // ¡Dibuja!
     vkCmdDraw(commandBuffer, vertexBuffer.getVertexCount(), 1, 0, 0);
 
     vkCmdEndRenderPass(commandBuffer);

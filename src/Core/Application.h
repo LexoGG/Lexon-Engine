@@ -8,11 +8,15 @@
 #include "../Vulkan/CommandBuffers.h"
 #include "../Vulkan/SyncObjects.h"
 #include "../Vulkan/VertexBuffer.h"
-
+#include "../Vulkan/UniformBuffers.h"
+#include "../Vulkan/UniformBufferObject.h"
+#include "../Vulkan/DescriptorManager.h"
 
 class Application {
 public:
+
     void run();
+    DescriptorManager descriptorManager;
 
 private:
     void init();
@@ -26,4 +30,7 @@ private:
     CommandBuffers commandBuffers;
     SyncObjects syncObjects;
     VertexBuffer vertexBuffer;
+    UniformBuffers uniformBuffers;
+
+
 };

@@ -1,4 +1,5 @@
-#pragma once
+﻿#pragma once
+class DescriptorManager;
 
 #include "VulkanContext.h"
 #include "Pipeline.h"
@@ -12,8 +13,17 @@ public:
     void cleanup(VulkanContext& context);
 
     VkCommandBuffer getCommandBuffer(size_t index) const;
-    void recordCommandBuffer(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, VertexBuffer& vertexBuffer, uint32_t imageIndex, uint32_t frameIndex);
 
+    void recordCommandBuffer(
+        VulkanContext& context,
+        Swapchain& swapchain,
+        Pipeline& pipeline,
+        VertexBuffer& vertexBuffer,
+        DescriptorManager& descriptorManager,  // ✅ Este ahora es válido
+        uint32_t imageIndex,
+        uint32_t frameIndex
+    );
+    //static const int MAX_FRAMES_IN_FLIGHT = 2;
 
 
 private:
@@ -27,5 +37,5 @@ private:
     std::vector<VkCommandBuffer> commandBuffers;
 
 
-    static const int MAX_FRAMES_IN_FLIGHT = 2;
+
 };

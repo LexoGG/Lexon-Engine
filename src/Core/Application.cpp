@@ -32,7 +32,7 @@ void Application::init() {
     vertexBuffer.create(context.getDevice(), context.getPhysicalDevice(), vertices); // ✅ ANTES
     std::cout << "[DEBUG] VertexBuffer creado: " << (vertexBuffer.getBuffer() != VK_NULL_HANDLE) << std::endl;
 
-    
+
 
 
     std::cout << "Creando la cadena de intercambio (swapchain)" << std::endl;
@@ -54,9 +54,40 @@ void Application::init() {
     std::cout << "Creando los semáforos" << std::endl;
     syncObjects.init(context);
 
+    uniformBuffers.init(context.getDevice(), context.getPhysicalDevice(), sizeof(UniformBufferObject), MAX_FRAMES_IN_FLIGHT);
+    descriptorManager.init(context.getDevice(), pipeline.getDescriptorSetLayout(), MAX_FRAMES_IN_FLIGHT);
 
+    // Por cada frame, actualiza el descriptor con el buffer correspondiente
+    for (uint32_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        VkDescriptorBufferInfo bufferInfo{};
+        bufferInfo.buffer = uniformBuffers.getBuffer(i);
+        bufferInfo.offset = 0;
+        bufferInfo.range = sizeof(UniformBufferObject);
 
+        VkWriteDescriptorSet descriptorWrite{};
+        descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptorWrite.dstSet = descriptorManager.getSet(i);
+        descriptorWrite.dstBinding = 0;
+        descriptorWrite.dstArrayElement = 0;
+        descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descriptorWrite.descriptorCount = 1;
+        descriptorWrite.pBufferInfo = &bufferInfo;
 
+        vkUpdateDescriptorSets(context.getDevice(), 1, &descriptorWrite, 0, nullptr);
+
+        uniformBuffers.init(
+            context.getDevice(),
+            context.getPhysicalDevice(),
+            sizeof(UniformBufferObject),
+            MAX_FRAMES_IN_FLIGHT
+        );
+
+        descriptorManager.init(
+            context.getDevice(),
+            pipeline.getDescriptorSetLayout(),
+            MAX_FRAMES_IN_FLIGHT);
+
+    }
 
 }
 
@@ -85,6 +116,8 @@ void Application::mainLoop() {
 }
 
 void Application::cleanup() {
+    uniformBuffers.cleanup(context.getDevice());
+    descriptorManager.cleanup(context.getDevice());
     vertexBuffer.destroy(context.getDevice());
     syncObjects.cleanup(context);
     commandBuffers.cleanup(context);

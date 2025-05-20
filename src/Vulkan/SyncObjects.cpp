@@ -1,4 +1,5 @@
-#include "SyncObjects.h"
+﻿#include "SyncObjects.h"
+#include "DescriptorManager.h"
 #include <stdexcept>
 
 
@@ -49,7 +50,16 @@ void SyncObjects::drawFrame(VulkanContext& context, Swapchain& swapchain, Pipeli
     vkResetCommandBuffer(commandBuffers.getCommandBuffer(currentFrame), 0);
 
     uint32_t frameIndex = currentFrame;
-    commandBuffers.recordCommandBuffer(context, swapchain, pipeline, vertexBuffer, imageIndex, frameIndex);
+
+    commandBuffers.recordCommandBuffer(
+        context,
+        swapchain,
+        pipeline,
+        vertexBuffer,
+        descriptorManager,  // ✅ Este debe estar visible en el ámbito
+        imageIndex,
+        currentFrame
+    );
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
