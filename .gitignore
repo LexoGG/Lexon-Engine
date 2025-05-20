@@ -1,4 +1,6 @@
-# Ignorar la carpeta .vs (Visual Studio)
+
 .vs/
 LexonV0/x64/Debug/
 x64
+
+LexonV0.sln
