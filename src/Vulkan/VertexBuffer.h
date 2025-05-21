@@ -8,7 +8,6 @@
 class VertexBuffer {
 public:
     void create(VkDevice device, VkPhysicalDevice physicalDevice, const std::vector<Vertex>& vertices);
-    void createIndexBuffer();
     void destroy(VkDevice device);
     void bind(VkCommandBuffer commandBuffer);
 
@@ -19,6 +18,4 @@ private:
     VkBuffer buffer = VK_NULL_HANDLE;
     VkDeviceMemory memory = VK_NULL_HANDLE;
     uint32_t vertexCount = 0;
-    VkBuffer indexBuffer;
-    VkDeviceMemory indexBufferMemory;
 };

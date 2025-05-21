@@ -26,6 +26,4 @@ private:
     CommandBuffers commandBuffers;
     SyncObjects syncObjects;
     VertexBuffer vertexBuffer;
-    VkBuffer indexBuffer;
-    VkDeviceMemory indexBufferMemory;
 };

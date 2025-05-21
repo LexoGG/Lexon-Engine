@@ -113,9 +113,7 @@ void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swap
 
 
     // ¡Dibuja!
-    //vkCmdDraw(commandBuffer, vertexBuffer.getVertexCount(), 1, 0, 0);
-    vkCmdDrawIndexed(commandBuffer, vertexBuffer.getVertexCount(), 1, 0, 0, 0);
-
+    vkCmdDraw(commandBuffer, vertexBuffer.getVertexCount(), 1, 0, 0);
 
     vkCmdEndRenderPass(commandBuffer);
 
