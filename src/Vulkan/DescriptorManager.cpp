@@ -33,6 +33,6 @@ void DescriptorManager::cleanup(VkDevice device) {
     vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 }
 
-VkDescriptorSet DescriptorManager::getSet(uint32_t frameIndex) {
+VkDescriptorSet DescriptorManager::getSet(uint32_t frameIndex) const {
     return descriptorSets[frameIndex];
 }

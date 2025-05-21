@@ -106,7 +106,7 @@ void CommandBuffers::recordCommandBuffer(
         VK_PIPELINE_BIND_POINT_GRAPHICS,
         pipeline.getPipelineLayout(),
         0, 1,
-        descriptorManager.getSet(frameIndex),
+        &descriptorManager.getSet(frameIndex),
         0, nullptr
     );
     // Viewport
