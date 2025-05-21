@@ -215,6 +215,8 @@ void Pipeline::createGraphicsPipeline(VulkanContext& context) {
         throw std::runtime_error("failed to create graphics pipeline!");
     }
 
+
+
     vkDestroyShaderModule(context.getDevice(), fragShaderModule, nullptr);
     vkDestroyShaderModule(context.getDevice(), vertShaderModule, nullptr);
 }
