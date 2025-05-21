@@ -1,4 +1,5 @@
-﻿#include "SyncObjects.h"
+﻿
+#include "SyncObjects.h"
 #include "DescriptorManager.h"
 #include <stdexcept>
 
