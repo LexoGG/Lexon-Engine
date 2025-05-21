@@ -13,10 +13,6 @@ public:
     VkPipeline getGraphicsPipeline() const;
     VkPipelineLayout getPipelineLayout() const;
 
-    void createDescriptorSetLayout(VkDevice device);
-    VkDescriptorSetLayout getDescriptorSetLayout() const { return descriptorSetLayout; }
-
-
 private:
     void createRenderPass(VulkanContext& context, Swapchain& swapchain);
     void createGraphicsPipeline(VulkanContext& context);
@@ -25,6 +21,4 @@ private:
     VkRenderPass renderPass = VK_NULL_HANDLE;
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
     VkPipeline graphicsPipeline = VK_NULL_HANDLE;
-    VkDescriptorSetLayout descriptorSetLayout;
-
 };
