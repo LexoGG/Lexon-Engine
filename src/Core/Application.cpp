@@ -8,16 +8,23 @@
 
 
 void Application::run() {
+    // Se inicializa la aplicacion y se crean los elementos necesarios
     init();
+
+    // Bucle de trabajo una vez la aplicacion ha iniciado
     mainLoop();
+    
+    // Destruccion y limpieza de elementos antes del cierre de la aplicacion
     cleanup();
 }
 
 void Application::init() {
 
+    //Creacion de una ventana grafica 
     std::cout << "Creando la ventana" << std::endl;
     window.init();
 
+    // Creacion de objetos vulkan y dispositivos
     std::cout << "Creando contexto" << std::endl;
     context.init(window);
 
@@ -38,7 +45,7 @@ void Application::init() {
     std::cout << "Creando la cadena de intercambio (swapchain)" << std::endl;
     swapchain.init(context, window);  // 🔄 sin renderPass aún
 
-    std::cout << "Creando la pipeline gráfica" << std::endl;
+    std::cout << "Creando la pipeline grafica" << std::endl;
     pipeline.init(context, swapchain);  // 🔄 crea el renderPass
 
     std::cout << "Creando los framebuffers" << std::endl;
@@ -51,7 +58,7 @@ void Application::init() {
     std::cout << "Creando el buffer de comandos" << std::endl;
     commandBuffers.init(context, swapchain); // ✅ DESPUÉS de que el buffer exista
 
-    std::cout << "Creando los semáforos" << std::endl;
+    std::cout << "Creando los semaforos" << std::endl;
     syncObjects.init(context);
 
 
@@ -59,7 +66,6 @@ void Application::init() {
 
 
 }
-
 
 void Application::mainLoop() {
     int frameCount = 0;

@@ -18,9 +18,12 @@ public:
     static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 
 private:
+    //Objeto ventana usado
     GLFWwindow* window = nullptr;
+
     bool framebufferResized = false;
 
+    //Tamaño inicial de la ventana
     static const uint32_t WIDTH = 800;
     static const uint32_t HEIGHT = 600;
 };

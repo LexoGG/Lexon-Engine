@@ -26,6 +26,7 @@ void VulkanContext::cleanup(Window& window) {
     vkDestroyInstance(instance, nullptr);
 }
 
+// Funciones para obtener las variables privadas
 VkDevice VulkanContext::getDevice() const { return device; }
 VkInstance VulkanContext::getInstance() const { return instance; }
 VkSurfaceKHR VulkanContext::getSurface() const { return surface; }
@@ -189,9 +190,6 @@ void VulkanContext::createLogicalDevice() {
     vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
     vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 }
-
-
-
 
 VulkanContext::QueueFamilyIndices VulkanContext::findQueueFamilies(VkPhysicalDevice device) {
     QueueFamilyIndices indices;

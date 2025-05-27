@@ -21,7 +21,6 @@ public:
     VkQueue getGraphicsQueue() const;
     VkQueue getPresentQueue() const;
 
-    // Añade al final de la sección pública:
 public:
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;

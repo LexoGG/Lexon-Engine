@@ -9,6 +9,7 @@ int main() {
     system("shaders\\compileshaders.bat");
 
     try {
+        //Se lanza el inicio de la aplicacion
         app.run();
     }
     catch (const std::exception& e) {
