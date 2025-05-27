@@ -31,7 +31,7 @@ void SyncObjects::cleanup(VulkanContext& context) {
     }
 }
 
-void SyncObjects::drawFrame(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, CommandBuffers& commandBuffers, VertexBuffer& vertexBuffer, Window& window, VkRenderPass renderPass) {
+void SyncObjects::drawFrame(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, CommandBuffers& commandBuffers, VertexBuffer& vertexBuffer, IndexBuffer& indexBuffer, Window& window, VkRenderPass renderPass) {
     vkWaitForFences(context.getDevice(), 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
     uint32_t imageIndex;
@@ -49,7 +49,7 @@ void SyncObjects::drawFrame(VulkanContext& context, Swapchain& swapchain, Pipeli
     vkResetCommandBuffer(commandBuffers.getCommandBuffer(currentFrame), 0);
 
     uint32_t frameIndex = currentFrame;
-    commandBuffers.recordCommandBuffer(context, swapchain, pipeline, vertexBuffer, imageIndex, frameIndex);
+    commandBuffers.recordCommandBuffer(context, swapchain, pipeline, vertexBuffer, indexBuffer, imageIndex, frameIndex);
 
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

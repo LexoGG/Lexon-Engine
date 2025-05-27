@@ -4,7 +4,10 @@
 #include "Pipeline.h"
 #include "Swapchain.h"
 #include "VertexBuffer.h"
+#include "IndexBuffer.h"
 #include <vector>
+
+
 
 class CommandBuffers {
 public:
@@ -12,7 +15,7 @@ public:
     void cleanup(VulkanContext& context);
 
     VkCommandBuffer getCommandBuffer(size_t index) const;
-    void recordCommandBuffer(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, VertexBuffer& vertexBuffer, uint32_t imageIndex, uint32_t frameIndex);
+    void recordCommandBuffer(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, VertexBuffer& vertexBuffer, IndexBuffer& indexBuffer, uint32_t imageIndex, uint32_t frameIndex);
 
 
 

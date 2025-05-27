@@ -29,17 +29,27 @@ void Application::init() {
     context.init(window);
 
 
-    std::vector<Vertex> vertices = {
-        {{ 0.0f, -0.5f }, { 1.0f, 0.0f, 0.0f }},
-        {{ 0.5f,  0.5f }, { 0.0f, 1.0f, 0.0f }},
-        {{-0.5f,  0.5f }, { 0.0f, 0.0f, 1.0f }}
+    const std::vector<Vertex> vertices = {
+        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
     };
+
+    std::vector<uint32_t> indices = { 0, 1, 2, 2, 3, 0 }; // cuadrado con dos triángulos
+    indexBuffer.create(context.getDevice(), context.getPhysicalDevice(), indices);
+
+
 
     std::cout << "[INFO] Vertices cargados: " << vertices.size() << std::endl;
     vertexBuffer.create(context.getDevice(), context.getPhysicalDevice(), vertices); // ✅ ANTES
     std::cout << "[DEBUG] VertexBuffer creado: " << (vertexBuffer.getBuffer() != VK_NULL_HANDLE) << std::endl;
 
-    
+    vertexBuffer.create(context.getDevice(), context.getPhysicalDevice(), vertices);
+
+
+
+
 
 
     std::cout << "Creando la cadena de intercambio (swapchain)" << std::endl;
@@ -73,7 +83,7 @@ void Application::mainLoop() {
 
     while (!window.shouldClose()) {
         window.pollEvents();
-        syncObjects.drawFrame(context, swapchain, pipeline, commandBuffers, vertexBuffer, window, pipeline.getRenderPass());
+        syncObjects.drawFrame(context, swapchain, pipeline, commandBuffers, vertexBuffer, indexBuffer, window, pipeline.getRenderPass());
 
         frameCount++;
 
@@ -91,6 +101,7 @@ void Application::mainLoop() {
 }
 
 void Application::cleanup() {
+
     vertexBuffer.destroy(context.getDevice());
     syncObjects.cleanup(context);
     commandBuffers.cleanup(context);

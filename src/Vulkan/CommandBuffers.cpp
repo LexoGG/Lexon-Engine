@@ -1,5 +1,5 @@
-#include "CommandBuffers.h"
 
+#include "../Core/Application.h"
 #include <stdexcept>
 #include <iostream>
 
@@ -50,7 +50,7 @@ void CommandBuffers::createCommandBuffers(VulkanContext& context) {
     }
 }
 
-void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, VertexBuffer& vertexBuffer, uint32_t imageIndex, uint32_t frameIndex) {
+void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, VertexBuffer& vertexBuffer, IndexBuffer& indexBuffer, uint32_t imageIndex, uint32_t frameIndex) {
 
     VkCommandBuffer commandBuffer = commandBuffers[frameIndex];
 
@@ -113,7 +113,12 @@ void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swap
 
 
     // ¡Dibuja!
-    vkCmdDraw(commandBuffer, vertexBuffer.getVertexCount(), 1, 0, 0);
+    //vkCmdDraw(commandBuffer, vertexBuffer.getVertexCount(), 1, 0, 0);
+
+    vertexBuffer.bind(commandBuffer);
+    indexBuffer.bind(commandBuffer);
+    vkCmdDrawIndexed(commandBuffer, indexBuffer.getIndexCount(), 1, 0, 0, 0);
+
 
     vkCmdEndRenderPass(commandBuffer);
 

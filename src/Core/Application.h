@@ -8,11 +8,14 @@
 #include "../Vulkan/CommandBuffers.h"
 #include "../Vulkan/SyncObjects.h"
 #include "../Vulkan/VertexBuffer.h"
+#include "../Vulkan/IndexBuffer.h"
 
 
 class Application {
 public:
     void run();
+    IndexBuffer indexBuffer;
+
 
 private:
     void init();
@@ -26,4 +29,6 @@ private:
     CommandBuffers commandBuffers;
     SyncObjects syncObjects;
     VertexBuffer vertexBuffer;
+
+
 };

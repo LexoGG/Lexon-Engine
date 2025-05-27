@@ -13,7 +13,7 @@ public:
     void init(VulkanContext& context);
     void cleanup(VulkanContext& context);
 
-    void drawFrame(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, CommandBuffers& commandBuffers, VertexBuffer& vertexBuffer, Window& window, VkRenderPass renderPass);
+    void drawFrame(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, CommandBuffers& commandBuffers, VertexBuffer& vertexBuffer, IndexBuffer& indexBuffer, Window& window, VkRenderPass renderPass);
 
 private:
     static const int MAX_FRAMES_IN_FLIGHT = 2;
