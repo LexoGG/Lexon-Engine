@@ -102,8 +102,11 @@ void Application::mainLoop() {
 
 void Application::cleanup() {
 
-    vertexBuffer.destroy(context.getDevice());
+
     syncObjects.cleanup(context);
+    indexBuffer.destroy(context.getDevice()),
+       
+    vertexBuffer.destroy(context.getDevice());
     commandBuffers.cleanup(context);
     pipeline.cleanup(context);
     swapchain.cleanup(context);

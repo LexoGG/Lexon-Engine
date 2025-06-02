@@ -56,3 +56,15 @@ uint32_t findMemoryType(
 
     throw std::runtime_error("Failed to find suitable memory type!");
 }
+
+void destroyBuffer(VkDevice device, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
+    if (buffer != VK_NULL_HANDLE) {
+        vkDestroyBuffer(device, buffer, nullptr);
+        buffer = VK_NULL_HANDLE;
+    }
+
+    if (bufferMemory != VK_NULL_HANDLE) {
+        vkFreeMemory(device, bufferMemory, nullptr);
+        bufferMemory = VK_NULL_HANDLE;
+    }
+}

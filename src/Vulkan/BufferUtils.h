@@ -17,3 +17,5 @@ uint32_t findMemoryType(
     VkMemoryPropertyFlags properties,
     VkPhysicalDevice physicalDevice
 );
+
+void destroyBuffer(VkDevice device, VkBuffer& buffer, VkDeviceMemory& bufferMemory);

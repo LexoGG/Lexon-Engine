@@ -27,6 +27,14 @@ void IndexBuffer::bind(VkCommandBuffer commandBuffer) {
 }
 
 void IndexBuffer::destroy(VkDevice device) {
-    vkDestroyBuffer(device, buffer, nullptr);
-    vkFreeMemory(device, memory, nullptr);
+    if (buffer != VK_NULL_HANDLE) {
+        vkDestroyBuffer(device, buffer, nullptr);
+        buffer = VK_NULL_HANDLE;
+    }
+    if (memory != VK_NULL_HANDLE) {
+        vkFreeMemory(device, memory, nullptr);
+        memory = VK_NULL_HANDLE;
+    }
+    destroyBuffer(device, buffer, memory);
+
 }
