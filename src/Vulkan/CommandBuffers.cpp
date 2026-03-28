@@ -1,5 +1,7 @@
-
+﻿
 #include "../Core/Application.h"
+
+
 #include <stdexcept>
 #include <iostream>
 
@@ -112,11 +114,23 @@ void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swap
 
 
 
-    // �Dibuja!
+    // ¡Dibuja!
     //vkCmdDraw(commandBuffer, vertexBuffer.getVertexCount(), 1, 0, 0);
 
     vertexBuffer.bind(commandBuffer);
     indexBuffer.bind(commandBuffer);
+
+    vkCmdBindDescriptorSets(
+        commandBuffer,
+        VK_PIPELINE_BIND_POINT_GRAPHICS,        // mismo bind point
+        pipeline.getPipelineLayout(),                     // ← el mismo layout con el que creaste el pipeline
+        0,                                      // firstSet = 0
+        1,                                      // descriptorSetCount = 1
+        descriptorSetLayout,
+        0,                                      // dynamicOffsetCount
+        nullptr                                 // pDynamicOffsets
+    );
+
     vkCmdDrawIndexed(commandBuffer, indexBuffer.getIndexCount(), 1, 0, 0, 0);
 
 

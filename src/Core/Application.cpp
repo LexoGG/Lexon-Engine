@@ -36,9 +36,12 @@ void Application::init() {
         {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
     };
 
-    std::vector<uint32_t> indices = { 0, 1, 2, 2, 3, 0 }; // cuadrado con dos triángulos
-    indexBuffer.create(context.getDevice(), context.getPhysicalDevice(), indices);
+    std::vector<uint32_t> indices = { 0, 1, 2, 2, 3, 0 };
 
+
+    
+    std::cout << "commandPool=" << commandBuffers.getCommandPool()
+        << " graphicsQueue=" << context.getGraphicsQueue() << std::endl;
 
 
     std::cout << "[INFO] Vertices cargados: " << vertices.size() << std::endl;
@@ -68,8 +71,17 @@ void Application::init() {
     std::cout << "Creando el buffer de comandos" << std::endl;
     commandBuffers.init(context, swapchain); // ✅ DESPUÉS de que el buffer exista
 
+    indexBuffer.create(
+        context.getDevice(),
+        context.getPhysicalDevice(),
+        commandBuffers.getCommandPool(),   // <-- ya no es NULL
+        context.getGraphicsQueue(),        // <-- válida
+        indices
+    );
+
     std::cout << "Creando los semaforos" << std::endl;
     syncObjects.init(context);
+
 
 
 
@@ -81,11 +93,15 @@ void Application::mainLoop() {
     int frameCount = 0;
     auto startTime = std::chrono::high_resolution_clock::now();
 
+
     while (!window.shouldClose()) {
         window.pollEvents();
-        syncObjects.drawFrame(context, swapchain, pipeline, commandBuffers, vertexBuffer, indexBuffer, window, pipeline.getRenderPass());
+        std::cout << "ErrorLocalizado" << std::endl;
 
+        syncObjects.drawFrame(context, swapchain, pipeline, commandBuffers, vertexBuffer, indexBuffer, window, pipeline.getRenderPass());
         frameCount++;
+
+        std::cout << "ErrorLocalizado" << std::endl;
 
         auto currentTime = std::chrono::high_resolution_clock::now();
         float elapsed = std::chrono::duration<float>(currentTime - startTime).count();

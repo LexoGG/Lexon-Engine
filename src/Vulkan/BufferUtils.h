@@ -1,5 +1,4 @@
 #pragma once
-
 #include <vulkan/vulkan.h>
 
 void createBuffer(
@@ -19,3 +18,13 @@ uint32_t findMemoryType(
 );
 
 void destroyBuffer(VkDevice device, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+
+void copyBuffer(
+    VkDevice device,
+    VkCommandPool commandPool,
+    VkQueue graphicsQueue,
+    VkBuffer srcBuffer,
+    VkBuffer dstBuffer,
+    VkDeviceSize size
+);
+

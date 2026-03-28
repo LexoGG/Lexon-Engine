@@ -1,6 +1,6 @@
 #include "SyncObjects.h"
 #include <stdexcept>
-
+#include "Config.h"
 
 void SyncObjects::init(VulkanContext& context) {
     imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
@@ -93,4 +93,8 @@ void SyncObjects::drawFrame(VulkanContext& context, Swapchain& swapchain, Pipeli
     }
 
     currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
+
+    uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+    uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+
 }
