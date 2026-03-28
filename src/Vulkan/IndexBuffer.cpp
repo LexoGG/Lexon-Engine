@@ -44,6 +44,7 @@ void IndexBuffer::bind(VkCommandBuffer commandBuffer) {
 }
 
 void IndexBuffer::destroy(VkDevice device) {
+<<<<<<< HEAD
     if (buffer != VK_NULL_HANDLE) {
         vkDestroyBuffer(device, buffer, nullptr);
         buffer = VK_NULL_HANDLE;
@@ -52,4 +53,8 @@ void IndexBuffer::destroy(VkDevice device) {
         vkFreeMemory(device, memory, nullptr);
         memory = VK_NULL_HANDLE;
     }
+=======
+    vkDestroyBuffer(device, buffer, nullptr);
+    vkFreeMemory(device, memory, nullptr);
+>>>>>>> parent of e014b96 (Correcciones del Vertex Buffer)
 }

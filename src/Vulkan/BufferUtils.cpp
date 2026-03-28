@@ -61,6 +61,7 @@ uint32_t findMemoryType(
     }
 
     throw std::runtime_error("Failed to find suitable memory type!");
+<<<<<<< HEAD
 }
 
 void destroyBuffer(VkDevice device, VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
@@ -119,3 +120,6 @@ void copyBuffer(
 
     vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
 }
+=======
+}
+>>>>>>> parent of e014b96 (Correcciones del Vertex Buffer)
