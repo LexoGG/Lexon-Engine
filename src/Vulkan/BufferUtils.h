@@ -15,7 +15,6 @@ uint32_t findMemoryType(
     uint32_t typeFilter,
     VkMemoryPropertyFlags properties,
     VkPhysicalDevice physicalDevice
-<<<<<<< HEAD
 );
 
 void destroyBuffer(VkDevice device, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
@@ -29,6 +28,3 @@ void copyBuffer(
     VkDeviceSize size
 );
 
-=======
-);
->>>>>>> parent of e014b96 (Correcciones del Vertex Buffer)
