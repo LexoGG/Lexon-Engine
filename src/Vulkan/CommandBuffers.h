@@ -14,10 +14,6 @@ public:
     void init(VulkanContext& context, Swapchain& swapchain);
     void cleanup(VulkanContext& context);
 
-    VkCommandPool getCommandPool() const { return commandPool; }  //  AÑADIR
-
-
-
     VkCommandBuffer getCommandBuffer(size_t index) const;
     void recordCommandBuffer(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, VertexBuffer& vertexBuffer, IndexBuffer& indexBuffer, uint32_t imageIndex, uint32_t frameIndex);
 

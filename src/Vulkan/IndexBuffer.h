@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #pragma once
 
@@ -8,15 +8,11 @@
 
 class IndexBuffer {
 public:
-    void create(VkDevice device, VkPhysicalDevice physicalDevice,
-        VkCommandPool commandPool, VkQueue graphicsQueue,
-        const std::vector<uint32_t>& indices);
-
-    VkBuffer getBuffer() const { return buffer; }
-    uint32_t getIndexCount() const { return indexCount; }
-
-    void bind(VkCommandBuffer commandBuffer);   // ✅ AÑADIR
+    void create(VkDevice device, VkPhysicalDevice physicalDevice, const std::vector<uint32_t>& indices);
     void destroy(VkDevice device);
+    void bind(VkCommandBuffer commandBuffer);
+
+    uint32_t getIndexCount() const { return indexCount; }
 
 private:
     VkBuffer buffer = VK_NULL_HANDLE;

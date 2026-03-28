@@ -32,5 +32,3 @@ struct Vertex {
         return attributes;
     }
 };
-
-

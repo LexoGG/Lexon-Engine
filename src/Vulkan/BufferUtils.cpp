@@ -1,6 +1,5 @@
-﻿#include "BufferUtils.h"  // Asegúrate de que esto esté presente
+#include "BufferUtils.h"  // Aseg�rate de que esto est� presente
 #include "iostream"
-#include "Structs.h"
 
 void createBuffer(
     VkDevice device,
@@ -38,11 +37,6 @@ void createBuffer(
     }
 
     vkBindBufferMemory(device, buffer, bufferMemory, 0);
-
-    VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-
-
-
 }
 
 uint32_t findMemoryType(
@@ -73,49 +67,4 @@ void destroyBuffer(VkDevice device, VkBuffer& buffer, VkDeviceMemory& bufferMemo
         vkFreeMemory(device, bufferMemory, nullptr);
         bufferMemory = VK_NULL_HANDLE;
     }
-}
-
-void copyBuffer(
-    VkDevice device,
-    VkCommandPool commandPool,
-    VkQueue graphicsQueue,
-    VkBuffer srcBuffer,
-    VkBuffer dstBuffer,
-    VkDeviceSize size
-) {
-    VkCommandBufferAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    allocInfo.commandPool = commandPool;                     // ✅ IMPORTANTE
-    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = 1;
-
-    VkCommandBuffer commandBuffer;
-    if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS) {
-        throw std::runtime_error("Failed to allocate copy command buffer");
-    }
-
-    VkCommandBufferBeginInfo beginInfo{};
-    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-    vkBeginCommandBuffer(commandBuffer, &beginInfo);
-
-    VkBufferCopy copyRegion{};
-    copyRegion.srcOffset = 0;
-    copyRegion.dstOffset = 0;
-    copyRegion.size = size;
-    vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
-
-    vkEndCommandBuffer(commandBuffer);
-
-    VkSubmitInfo submitInfo{};
-    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &commandBuffer;
-
-    // ✅ enviar el trabajo antes de esperar
-    vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(graphicsQueue);
-
-    vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
 }
