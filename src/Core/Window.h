@@ -20,7 +20,6 @@ public:
 private:
     //Objeto ventana usado
     GLFWwindow* window = nullptr;
-
     bool framebufferResized = false;
 
     //Tamaño inicial de la ventana

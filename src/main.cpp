@@ -5,7 +5,7 @@
 int main() {
     Application app;
 
-    // Ejecuta el script para compilar shaders (ajusta la ruta si es necesario)
+    // Ejecuta el script para compilar shaders
     system("shaders\\compileshaders.bat");
 
     try {

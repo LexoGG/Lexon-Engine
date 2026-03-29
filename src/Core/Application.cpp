@@ -33,14 +33,15 @@ void Application::init() {
 
     const std::vector<Vertex> vertices = {
         //Posicion en -1,1 de la pantalla y color en RGB
-        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+        {{-0.25f, -0.25f}, {1.0f, 0.0f, 0.0f}},
+        {{ 0.25f, -0.25f}, {0.0f, 1.0f, 0.0f}},
+        {{ 0.25f,  0.25f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.25f,  0.25f}, {1.0f, 1.0f, 1.0f}},
+
 
     };
 
-    std::vector<uint32_t> indices = { 0, 1, 2, 2, 3, 0 }; // cuadrado con dos triángulos
+    std::vector<uint32_t> indices = { 0, 1, 2, 2, 3, 0}; // cuadrado con dos triángulos 0-1-2, 2-3-0
     indexBuffer.create(context.getDevice(), context.getPhysicalDevice(), indices);
 
 
@@ -94,12 +95,14 @@ void Application::mainLoop() {
             const float anchoPanel = 520.f;
             ImGui::SetNextWindowPos(ImVec2(0.f, 0.f), ImGuiCond_Always);
             ImGui::SetNextWindowSize(ImVec2(anchoPanel, io.DisplaySize.y), ImGuiCond_Always);
+
         }
         ImGui::ShowDemoWindow(&demoAbierta);
         static bool ventanaSaludoAbierta = true;
         if (ventanaSaludoAbierta) {
             if (ImGui::Begin("Ventana", &ventanaSaludoAbierta)) {
                 ImGui::Text("Hola");
+          
             }
             ImGui::End();
         }
