@@ -22,3 +22,13 @@ private:
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
     VkPipeline graphicsPipeline = VK_NULL_HANDLE;
 };
+
+class DescriptorSet {
+public:
+    void init(VkDevice device, VkDescriptorSetLayout& descriptorSetLayout);
+    VkDescriptorSetLayout& getDescriptor();
+
+private:
+    VkDescriptorSetLayout descriptorSetLayout;
+    VkPipelineLayout pipelineLayout;
+};
