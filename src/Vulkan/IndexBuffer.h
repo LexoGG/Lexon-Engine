@@ -6,10 +6,11 @@
 #include <vector>
 #include "Vertex.h"
 
+
 class IndexBuffer {
 public:
     void create(VkDevice device, VkPhysicalDevice physicalDevice, const std::vector<uint32_t>& indices);
-    void createUniformBuffer();
+
     void destroy(VkDevice device);
     void bind(VkCommandBuffer commandBuffer);
 

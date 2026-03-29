@@ -1,6 +1,7 @@
 #include "IndexBuffer.h"
 #include "BufferUtils.h"
 #include <iostream>
+#include "CommandBuffers.h"
 
 void IndexBuffer::create(VkDevice device, VkPhysicalDevice physicalDevice, const std::vector<uint32_t>& indices) {
     indexCount = static_cast<uint32_t>(indices.size());
@@ -42,3 +43,4 @@ void IndexBuffer::destroy(VkDevice device) {
     destroyBuffer(device, buffer, memory);
     std::cout << "Buffer destruido" << std::endl;
 }
+

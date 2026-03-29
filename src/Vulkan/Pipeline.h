@@ -12,6 +12,8 @@ public:
     VkRenderPass getRenderPass() const;
     VkPipeline getGraphicsPipeline() const;
     VkPipelineLayout getPipelineLayout() const;
+    void createDescriptorSetLayout(VkDevice device);
+    void DestroyDescriptorSetLayout(VkDevice device);
 
 private:
     void createRenderPass(VulkanContext& context, Swapchain& swapchain);
@@ -19,6 +21,7 @@ private:
     VkShaderModule createShaderModule(VulkanContext& context, const char* filepath);
 
     VkRenderPass renderPass = VK_NULL_HANDLE;
+    VkDescriptorSetLayout descriptorSetLayout;
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
     VkPipeline graphicsPipeline = VK_NULL_HANDLE;
 };
