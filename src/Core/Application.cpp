@@ -1,5 +1,7 @@
-﻿// Application.cpp
+// Application.cpp
 #include "Application.h"
+#include "../ImGui/ImGuiVulkan.h"
+#include "imgui.h"
 #include <stdexcept>
 #include <iostream>
 #include <chrono>
@@ -30,10 +32,12 @@ void Application::init() {
 
 
     const std::vector<Vertex> vertices = {
+        //Posicion en -1,1 de la pantalla y color en RGB
         {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
         {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
         {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
         {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+
     };
 
     std::vector<uint32_t> indices = { 0, 1, 2, 2, 3, 0 }; // cuadrado con dos triángulos
@@ -42,10 +46,8 @@ void Application::init() {
 
 
     std::cout << "[INFO] Vertices cargados: " << vertices.size() << std::endl;
-    vertexBuffer.create(context.getDevice(), context.getPhysicalDevice(), vertices); // ✅ ANTES
-    std::cout << "[DEBUG] VertexBuffer creado: " << (vertexBuffer.getBuffer() != VK_NULL_HANDLE) << std::endl;
-
     vertexBuffer.create(context.getDevice(), context.getPhysicalDevice(), vertices);
+    std::cout << "[DEBUG] VertexBuffer creado: " << (vertexBuffer.getBuffer() != VK_NULL_HANDLE) << std::endl;
 
 
 
@@ -71,10 +73,8 @@ void Application::init() {
     std::cout << "Creando los semaforos" << std::endl;
     syncObjects.init(context);
 
-
-
-
-
+    std::cout << "Inicializando ImGui" << std::endl;
+    ImGuiVulkan::Init(window, context, swapchain, pipeline.getRenderPass());
 }
 
 void Application::mainLoop() {
@@ -83,6 +83,29 @@ void Application::mainLoop() {
 
     while (!window.shouldClose()) {
         window.pollEvents();
+
+        ImGuiVulkan::BeginFrame();
+
+        // Ancla la demo al borde izquierdo del viewport (misma ventana GLFW).
+        // SetNext* afecta solo a la siguiente ventana -> ShowDemoWindow().
+        static bool demoAbierta = true;
+        {
+            const ImGuiIO& io = ImGui::GetIO();
+            const float anchoPanel = 520.f;
+            ImGui::SetNextWindowPos(ImVec2(0.f, 0.f), ImGuiCond_Always);
+            ImGui::SetNextWindowSize(ImVec2(anchoPanel, io.DisplaySize.y), ImGuiCond_Always);
+        }
+        ImGui::ShowDemoWindow(&demoAbierta);
+        static bool ventanaSaludoAbierta = true;
+        if (ventanaSaludoAbierta) {
+            if (ImGui::Begin("Ventana", &ventanaSaludoAbierta)) {
+                ImGui::Text("Hola");
+            }
+            ImGui::End();
+        }
+
+        ImGuiVulkan::EndFrame();
+
         syncObjects.drawFrame(context, swapchain, pipeline, commandBuffers, vertexBuffer, indexBuffer, window, pipeline.getRenderPass());
 
         frameCount++;
@@ -102,15 +125,17 @@ void Application::mainLoop() {
 
 void Application::cleanup() {
 
+    ImGuiVulkan::Shutdown(context.getDevice());
 
+    indexBuffer.destroy(context.getDevice());
     syncObjects.cleanup(context);
-    indexBuffer.destroy(context.getDevice()),
-       
-    vertexBuffer.destroy(context.getDevice());
     commandBuffers.cleanup(context);
     pipeline.cleanup(context);
+    
     swapchain.cleanup(context);
-    context.cleanup(window);
+
+    vertexBuffer.destroy(context.getDevice()); ///// 1 2
+    context.cleanup(window);//3
     window.cleanup();
 
 }

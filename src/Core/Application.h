@@ -14,7 +14,6 @@
 class Application {
 public:
     void run();
-    IndexBuffer indexBuffer;
 
 
 private:
@@ -29,6 +28,8 @@ private:
     CommandBuffers commandBuffers;
     SyncObjects syncObjects;
     VertexBuffer vertexBuffer;
+    IndexBuffer indexBuffer;
+
 
 
 };

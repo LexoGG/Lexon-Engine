@@ -1,5 +1,6 @@
 // VertexBuffer.cpp
 #include "VertexBuffer.h"
+#include <iomanip> 
 #include <cstring>
 #include <stdexcept>
 #include <iostream>
@@ -60,9 +61,17 @@ void VertexBuffer::create(VkDevice device, VkPhysicalDevice physicalDevice, cons
 
 void VertexBuffer::destroy(VkDevice device) {
     if (buffer != VK_NULL_HANDLE) {
+        std::cout << "Destruyendo Buffer" << std::endl;
         vkDestroyBuffer(device, buffer, nullptr);
+        std::cout << "Destruyendo Buffer: "<<&device << std::endl;
+        std::cout << "VkDevice handle  = 0x"
+            << std::hex
+            << reinterpret_cast<uintptr_t>(buffer)
+            << std::endl;
     }
     if (memory != VK_NULL_HANDLE) {
+        std::cout << "Destruyendo memoria del Buffer" << std::endl;
+
         vkFreeMemory(device, memory, nullptr);
     }
 }

@@ -1,4 +1,5 @@
 #include "SyncObjects.h"
+#include "../ImGui/ImGuiVulkan.h"
 #include <stdexcept>
 
 
@@ -39,6 +40,7 @@ void SyncObjects::drawFrame(VulkanContext& context, Swapchain& swapchain, Pipeli
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         swapchain.recreate(context, window, renderPass);
+        ImGuiVulkan::NotifySwapchainImageCount(static_cast<uint32_t>(swapchain.getFramebuffers().size()));
         return;
     }
     else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
@@ -87,6 +89,7 @@ void SyncObjects::drawFrame(VulkanContext& context, Swapchain& swapchain, Pipeli
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || window.wasResized()) {
         window.resetResizedFlag();
         swapchain.recreate(context, window, renderPass);
+        ImGuiVulkan::NotifySwapchainImageCount(static_cast<uint32_t>(swapchain.getFramebuffers().size()));
     }
     else if (result != VK_SUCCESS) {
         throw std::runtime_error("failed to present swap chain image!");

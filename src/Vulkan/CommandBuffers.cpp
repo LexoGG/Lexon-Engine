@@ -1,7 +1,6 @@
-
-#include "../Core/Application.h"
+#include "CommandBuffers.h"
+#include "../ImGui/ImGuiVulkan.h"
 #include <stdexcept>
-#include <iostream>
 
 void CommandBuffers::init(VulkanContext& context, Swapchain& swapchain) {
     createCommandPool(context);
@@ -87,10 +86,6 @@ void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swap
     // Bind pipeline
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.getGraphicsPipeline());
 
-    vertexBuffer.bind(commandBuffer);
-
-
-
     // Viewport
     VkViewport viewport{};
     viewport.x = 0.0f;
@@ -108,17 +103,10 @@ void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swap
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
     vertexBuffer.bind(commandBuffer);
-
-
-
-
-    // ¡Dibuja!
-    //vkCmdDraw(commandBuffer, vertexBuffer.getVertexCount(), 1, 0, 0);
-
-    vertexBuffer.bind(commandBuffer);
     indexBuffer.bind(commandBuffer);
     vkCmdDrawIndexed(commandBuffer, indexBuffer.getIndexCount(), 1, 0, 0, 0);
 
+    ImGuiVulkan::RenderDrawData(commandBuffer);
 
     vkCmdEndRenderPass(commandBuffer);
 

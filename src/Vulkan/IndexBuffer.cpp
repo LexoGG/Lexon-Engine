@@ -1,5 +1,6 @@
 #include "IndexBuffer.h"
 #include "BufferUtils.h"
+#include <iostream>
 
 void IndexBuffer::create(VkDevice device, VkPhysicalDevice physicalDevice, const std::vector<uint32_t>& indices) {
     indexCount = static_cast<uint32_t>(indices.size());
@@ -27,6 +28,8 @@ void IndexBuffer::bind(VkCommandBuffer commandBuffer) {
 }
 
 void IndexBuffer::destroy(VkDevice device) {
+    std::cout << "Buffer no destruido" << std::endl;
+
     if (buffer != VK_NULL_HANDLE) {
         vkDestroyBuffer(device, buffer, nullptr);
         buffer = VK_NULL_HANDLE;
@@ -35,6 +38,7 @@ void IndexBuffer::destroy(VkDevice device) {
         vkFreeMemory(device, memory, nullptr);
         memory = VK_NULL_HANDLE;
     }
-    destroyBuffer(device, buffer, memory);
 
+    destroyBuffer(device, buffer, memory);
+    std::cout << "Buffer destruido" << std::endl;
 }
