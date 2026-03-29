@@ -30,12 +30,6 @@ void Application::init() {
     std::cout << "Creando contexto" << std::endl;
     context.init(window);
 
-    struct UniformBufferObject {
-        glm::mat4 model;
-        glm::mat4 view;
-        glm::mat4 proj;
-    };
-
 
     const std::vector<Vertex> vertices = {
         //Posicion en -1,1 de la pantalla y color en RGB
@@ -62,10 +56,6 @@ void Application::init() {
 
     std::cout << "Creando la cadena de intercambio (swapchain)" << std::endl;
     swapchain.init(context, window);  // 🔄 sin renderPass aún
-
-    //Creacion del conjunto de descriptores 
-    std::cout << "Creando el conjunto de descriptores" << std::endl;
-    descriptorset.init(context.getDevice(), descriptorset.getDescriptor());
 
     std::cout << "Creando la pipeline grafica" << std::endl;
     pipeline.init(context, swapchain);  // 🔄 crea el renderPass
