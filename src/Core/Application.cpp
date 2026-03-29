@@ -30,17 +30,15 @@ void Application::init() {
     std::cout << "Creando contexto" << std::endl;
     context.init(window);
 
-    struct UniformBufferObject {
-        glm::mat4 model;
-        glm::mat4 view;
-        glm::mat4 proj;
-    };
 
     const std::vector<Vertex> vertices = {
-        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-        {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-        {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+        //Posicion en -1,1 de la pantalla y color en RGB
+        {{-0.25f, -0.25f}, {1.0f, 0.0f, 0.0f}},
+        {{ 0.25f, -0.25f}, {0.0f, 1.0f, 0.0f}},
+        {{ 0.25f,  0.25f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.25f,  0.25f}, {1.0f, 1.0f, 1.0f}},
+
+
     };
 
     std::vector<uint32_t> indices = { 0, 1, 2, 2, 3, 0}; // cuadrado con dos triángulos 0-1-2, 2-3-0
@@ -55,7 +53,7 @@ void Application::init() {
 
 
 
-    pipeline.createDescriptorSetLayout(context.getDevice());
+
 
     std::cout << "Creando la cadena de intercambio (swapchain)" << std::endl;
     swapchain.init(context, window);  // 🔄 sin renderPass aún
@@ -129,7 +127,7 @@ void Application::mainLoop() {
 }
 
 void Application::cleanup() {
-    std::cout << "Iniciando limpieza del sistema" << std:: endl;
+
     ImGuiVulkan::Shutdown(context.getDevice());
 
     indexBuffer.destroy(context.getDevice());
@@ -138,7 +136,7 @@ void Application::cleanup() {
     pipeline.cleanup(context);
     
     swapchain.cleanup(context);
-    pipeline.DestroyDescriptorSetLayout(context.getDevice());
+
     vertexBuffer.destroy(context.getDevice()); ///// 1 2
     context.cleanup(window);//3
     window.cleanup();
