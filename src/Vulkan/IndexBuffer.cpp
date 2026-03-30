@@ -6,16 +6,7 @@ void IndexBuffer::create(VkDevice device, VkPhysicalDevice physicalDevice, const
     indexCount = static_cast<uint32_t>(indices.size());
     VkDeviceSize bufferSize = sizeof(uint32_t) * indices.size();
 
-    // Aquí puedes usar una función común para crear buffers (como en VertexBuffer)
-    createBuffer(
-        device,
-        physicalDevice,
-        bufferSize,
-        VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-        buffer,
-        memory
-    );
+    createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, buffer, memory);
 
     void* data;
     vkMapMemory(device, memory, 0, bufferSize, 0, &data);

@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <chrono>
-
+#include "../Assets/Square.h"
 
 
 
@@ -30,30 +30,20 @@ void Application::init() {
     std::cout << "Creando contexto" << std::endl;
     context.init(window);
 
-
-    const std::vector<Vertex> vertices = {
-        //Posicion en -1,1 de la pantalla y color en RGB
-        {{-0.25f, -0.25f}, {1.0f, 0.0f, 0.0f}},
-        {{ 0.25f, -0.25f}, {0.0f, 1.0f, 0.0f}},
-        {{ 0.25f,  0.25f}, {0.0f, 0.0f, 1.0f}},
-        {{-0.25f,  0.25f}, {1.0f, 1.0f, 1.0f}},
-
-
-    };
-
-    std::vector<uint32_t> indices = { 0, 1, 2, 2, 3, 0}; // cuadrado con dos triángulos 0-1-2, 2-3-0
-    indexBuffer.create(context.getDevice(), context.getPhysicalDevice(), indices);
+    Cuadrado cuadro;
+    std::vector<Vertex> vertices = cuadro.createsquare(1.5f);
 
 
 
+
+    //Cargado de vertices iniciales
+    std::cout << "Cargando vertices...";
+    indexBuffer.create(context.getDevice(), context.getPhysicalDevice(), cuadro.GetIndex());
     std::cout << "[INFO] Vertices cargados: " << vertices.size() << std::endl;
+
+    std::cout << "Creando buffer de vertices:";
     vertexBuffer.create(context.getDevice(), context.getPhysicalDevice(), vertices);
     std::cout << "[DEBUG] VertexBuffer creado: " << (vertexBuffer.getBuffer() != VK_NULL_HANDLE) << std::endl;
-
-
-
-
-
 
     std::cout << "Creando la cadena de intercambio (swapchain)" << std::endl;
     swapchain.init(context, window);  // 🔄 sin renderPass aún
@@ -63,10 +53,6 @@ void Application::init() {
 
     std::cout << "Creando los framebuffers" << std::endl;
     swapchain.createFramebuffers(context, pipeline.getRenderPass());  // ✅ renderPass ya existe
-
-
-
-
 
     std::cout << "Creando el buffer de comandos" << std::endl;
     commandBuffers.init(context, swapchain); // ✅ DESPUÉS de que el buffer exista
@@ -101,7 +87,8 @@ void Application::mainLoop() {
         static bool ventanaSaludoAbierta = true;
         if (ventanaSaludoAbierta) {
             if (ImGui::Begin("Ventana", &ventanaSaludoAbierta)) {
-                ImGui::Text("Hola");
+               
+
           
             }
             ImGui::End();
