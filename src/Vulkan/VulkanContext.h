@@ -2,6 +2,7 @@
 #pragma once
 
 #include "../Core/Window.h"
+#include "../Core/Globals.h"
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
@@ -10,18 +11,34 @@
 #include <set>
 #include <string>
 
+#ifdef NDEBUG
+const bool enableValidationLayers = false;
+#else
+const bool enableValidationLayers = true;
+#endif
+
+struct SwapChainSupportDetails {
+    VkSurfaceCapabilitiesKHR capabilities;
+    std::vector<VkSurfaceFormatKHR> formats;
+    std::vector<VkPresentModeKHR> presentModes;
+};
+
 class VulkanContext {
 public:
-    void init(Window& window);
-    void cleanup(Window& window);
+    void createInstance();
+    void init();
+    void cleanup();
 
-    VkDevice getDevice() const;
-    VkInstance getInstance() const;
-    VkSurfaceKHR getSurface() const;
-    VkQueue getGraphicsQueue() const;
-    VkQueue getPresentQueue() const;
+    static VkDevice getDevice() ;
+    static VkInstance getInstance();
+    static VkSurfaceKHR getSurface()  ;
+    static VkSurfaceKHR* getSurfacePointer();
 
-public:
+    static VkQueue getGraphicsQueue()  ;
+    static VkQueue getPresentQueue()  ;
+
+    void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+
     struct QueueFamilyIndices {
         std::optional<uint32_t> graphicsFamily;
         std::optional<uint32_t> presentFamily;
@@ -32,36 +49,36 @@ public:
     };
 
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-    VkPhysicalDevice getPhysicalDevice() const { return physicalDevice; }
+    static VkPhysicalDevice getPhysicalDevice() { return physicalDevice; };
+
+    static SwapChainSupportDetails querySwapChainSupport (VkPhysicalDevice physicalDevice);
 
 
 private:
-    void createInstance();
     void setupDebugMessenger();
-    void createSurface(Window& window);
+    void createSurface();
     void pickPhysicalDevice();
     void createLogicalDevice();
 
     bool checkValidationLayerSupport();
     std::vector<const char*> getRequiredExtensions();
 
-    VkInstance instance = VK_NULL_HANDLE;
+    static VkDevice device;
+    static VkInstance instance;
+    static VkSurfaceKHR surface;
+    static VkQueue graphicsQueue;
+    static VkQueue presentQueue;
+
+    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData);
+    VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
+	bool isDeviceSuitable(VkPhysicalDevice device);
+    bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+    void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
+
     VkDebugUtilsMessengerEXT debugMessenger;
-    VkSurfaceKHR surface;
+    static VkPhysicalDevice physicalDevice;
 
-    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-    VkDevice device = VK_NULL_HANDLE;
-    VkQueue graphicsQueue;
-    VkQueue presentQueue;
-
-
-    const std::vector<const char*> validationLayers = {
-        "VK_LAYER_KHRONOS_validation"
-    };
-
-#ifdef NDEBUG
-    const bool enableValidationLayers = false;
-#else
-    const bool enableValidationLayers = true;
-#endif
 };
+
+
+

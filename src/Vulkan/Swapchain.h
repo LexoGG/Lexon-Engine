@@ -3,38 +3,55 @@
 
 #include "VulkanContext.h"
 #include "../Core/Window.h"
+#include "Pipeline.h"
 
 #include <vector>
+
+struct QueueFamilyIndices {
+    std::optional<uint32_t> graphicsFamily;
+    std::optional<uint32_t> presentFamily;
+
+    bool isComplete() {
+        return graphicsFamily.has_value() && presentFamily.has_value();
+    }
+};
 
 class Swapchain {
 public:
     void init(VulkanContext& context, Window& window); // ✅ sin renderPass
     void cleanup(VulkanContext& context);
-    void recreate(VulkanContext& context, Window& window, VkRenderPass renderPass);
+    static void recreate();
 
-    VkSwapchainKHR getRawSwapchain() const;
-    VkExtent2D getExtent() const;
-    VkFormat getFormat() const;
+    static VkExtent2D getExtent() ;
+    static VkFormat getFormat() ;
     const std::vector<VkImageView>& getImageViews() const;
-    const std::vector<VkFramebuffer>& getFramebuffers() const;
-    void createFramebuffers(VulkanContext& context, VkRenderPass renderPass);
+    static const std::vector<VkFramebuffer>& getFramebuffers() ;
+    static void createFramebuffers();
+    static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+    static VkFramebuffer getIndexFramebuffers(uint32_t imageIndex) ;
 
+    static QueueFamilyIndices getQueueFamilyIndices() { return indices; };
+    static VkSwapchainKHR GetSwapchain() { return swapchain; };
 
+    static std::vector<VkImageView> swapChainImageViews;
 
-
-
+    static void recreateSwapChain();
+    static void createSwapchain();
+    static void createImageViews();
+    static void cleanupSwapChain();
 private:
-    void createSwapchain(VulkanContext& context, Window& window);
-    void createImageViews(VulkanContext& context);
-    void cleanupSwapchain(VulkanContext& context);
 
-    VkSwapchainKHR swapchain;
-    std::vector<VkImage> images;
-    std::vector<VkImageView> imageViews;
-    std::vector<VkFramebuffer> framebuffers;
 
-    VkExtent2D extent;
-    VkFormat format;
 
-    friend class Pipeline;
+    static VkSwapchainKHR swapchain;
+    static VkSwapchainKHR* swapchainPointer;  // Agregado para obtener un puntero al swapchain
+    static std::vector<VkImage> swapChainImages;
+    
+    static std::vector<VkFramebuffer> swapChainFramebuffers;
+
+    static VkExtent2D swapChainExtent;
+    static VkFormat swapChainImageFormat;
+    static QueueFamilyIndices indices;
+
+
 };

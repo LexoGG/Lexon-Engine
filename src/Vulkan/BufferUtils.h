@@ -1,21 +1,20 @@
 #pragma once
 
+#include "VulkanContext.h"
 #include <vulkan/vulkan.h>
+#include "CommandBuffers.h"
+#include "BufferUtils.h"
 
-void createBuffer(
-    VkDevice device,
-    VkPhysicalDevice physicalDevice,
-    VkDeviceSize size,
-    VkBufferUsageFlags usage,
-    VkMemoryPropertyFlags properties,
-    VkBuffer& buffer,
-    VkDeviceMemory& bufferMemory
-);
+class BufferUtils{
+	public:
+        static void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
-uint32_t findMemoryType(
-    uint32_t typeFilter,
-    VkMemoryPropertyFlags properties,
-    VkPhysicalDevice physicalDevice
-);
+        static uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
-void destroyBuffer(VkDevice device, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+        static void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+        static void destroyBuffer(VkDevice device, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+
+
+
+
+};

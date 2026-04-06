@@ -5,81 +5,42 @@
 #include <stdexcept>
 #include <iostream>
 
-void VertexBuffer::create(VkDevice device, VkPhysicalDevice physicalDevice, const std::vector<Vertex>& vertices) {
+VkBuffer VertexBuffer::vertexBuffer = VK_NULL_HANDLE;
 
-    if (vertices.empty()) {
-        throw std::runtime_error("ERROR: Se llamó a VertexBuffer::create con un vector vacío.");
-    }
-
-    vertexCount = static_cast<uint32_t>(vertices.size());
-
+void VertexBuffer::createVertexBuffer() {
     VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
-    VkBufferCreateInfo bufferInfo{};
-    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferInfo.size = bufferSize;
-    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-    if (vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create vertex buffer!");
-    }
-
-    VkMemoryRequirements memRequirements;
-    vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
-
-    VkMemoryAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    allocInfo.allocationSize = memRequirements.size;
-
-    VkPhysicalDeviceMemoryProperties memProperties;
-    vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
-
-    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
-        if ((memRequirements.memoryTypeBits & (1 << i)) &&
-            (memProperties.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT) &&
-            (memProperties.memoryTypes[i].propertyFlags & VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) {
-            allocInfo.memoryTypeIndex = i;
-            break;
-        }
-    }
-
-    if (vkAllocateMemory(device, &allocInfo, nullptr, &memory) != VK_SUCCESS) {
-        throw std::runtime_error("failed to allocate vertex buffer memory!");
-    }
-
-    vkBindBufferMemory(device, buffer, memory, 0);
+    VkBuffer stagingBuffer;
+    VkDeviceMemory stagingBufferMemory;
+    BufferUtils::createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
     void* data;
-    vkMapMemory(device, memory, 0, bufferSize, 0, &data);
-    memcpy(data, vertices.data(), static_cast<size_t>(bufferSize));
-    vkUnmapMemory(device, memory);
+    vkMapMemory(VulkanContext::getDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
+    memcpy(data, vertices.data(), (size_t)bufferSize);
+    vkUnmapMemory(VulkanContext::getDevice(), stagingBufferMemory);
 
-    std::cout << "[DEBUG] vkUnmapMemory completo. Buffer: " << buffer << std::endl;
+    BufferUtils::createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
+
+    BufferUtils::copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
+
+    vkDestroyBuffer(VulkanContext::getDevice(), stagingBuffer, nullptr);
+    vkFreeMemory(VulkanContext::getDevice(), stagingBufferMemory, nullptr);
 
 }
 
-void VertexBuffer::destroy(VkDevice device) {
-    if (buffer != VK_NULL_HANDLE) {
-        std::cout << "Destruyendo Buffer" << std::endl;
-        vkDestroyBuffer(device, buffer, nullptr);
-        std::cout << "Destruyendo Buffer: "<<&device << std::endl;
-        std::cout << "VkDevice handle  = 0x"
-            << std::hex
-            << reinterpret_cast<uintptr_t>(buffer)
-            << std::endl;
-    }
-    if (memory != VK_NULL_HANDLE) {
-        std::cout << "Destruyendo memoria del Buffer" << std::endl;
+void VertexBuffer::destroy() {
 
-        vkFreeMemory(device, memory, nullptr);
-    }
+    vkDestroyBuffer(VulkanContext::getDevice(), vertexBuffer, nullptr);
+
 }
 
 void VertexBuffer::bind(VkCommandBuffer commandBuffer) {
-    VkBuffer vertexBuffers[] = { buffer };
+    VkBuffer vertexBuffers[] = { vertexBuffer };
     VkDeviceSize offsets[] = { 0 };
 
 
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 }
+
+
+VkDeviceMemory VertexBuffer::vertexBufferMemory = VK_NULL_HANDLE;

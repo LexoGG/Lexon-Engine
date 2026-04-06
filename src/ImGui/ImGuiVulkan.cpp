@@ -46,7 +46,7 @@ void CreateDescriptorPool(VkDevice device) {
 
 namespace ImGuiVulkan {
 
-void Init(Window& window, VulkanContext& context, const Swapchain& swapchain, VkRenderPass renderPass) {
+void Init(VulkanContext& context, const Swapchain& swapchain, VkRenderPass renderPass) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
@@ -54,9 +54,9 @@ void Init(Window& window, VulkanContext& context, const Swapchain& swapchain, Vk
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-    ImGui_ImplGlfw_InitForVulkan(window.getGLFWwindow(), true);
+    ImGui_ImplGlfw_InitForVulkan(Window::getGLFWwindow(), true);
 
-    VkDevice device = context.getDevice();
+    VkDevice device = VulkanContext::getDevice();
     CreateDescriptorPool(device);
 
     auto queueFamilies = context.findQueueFamilies(context.getPhysicalDevice());

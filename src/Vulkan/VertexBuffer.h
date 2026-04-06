@@ -4,20 +4,25 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 #include "Vertex.h"
+#include "VulkanContext.h"
+#include "../Assets/Square.h"
+#include "BufferUtils.h"
+
 
 class VertexBuffer {
 public:
 
-    void create(VkDevice device, VkPhysicalDevice physicalDevice, const std::vector<Vertex>& vertices);
-    void destroy(VkDevice device);
+    void createVertexBuffer();
+    void destroy();
     void bind(VkCommandBuffer commandBuffer);
 
-    VkBuffer getBuffer() const { return buffer; }
+    static VkBuffer getBuffer()  { return vertexBuffer; }
+    static VkDeviceMemory getvertexbuffermemory() { return vertexBufferMemory; }
     uint32_t getVertexCount() const { return vertexCount; }
 
 private:
-    VkBuffer buffer = VK_NULL_HANDLE;
-    VkDeviceMemory memory = VK_NULL_HANDLE;
+    static VkBuffer vertexBuffer;
+    static VkDeviceMemory vertexBufferMemory;
     uint32_t vertexCount = 0;
 
 };

@@ -1,58 +1,53 @@
 #include "CommandBuffers.h"
 #include "../ImGui/ImGuiVulkan.h"
 #include <stdexcept>
+#include "SyncObjects.h"
 
-void CommandBuffers::init(VulkanContext& context, Swapchain& swapchain) {
-    createCommandPool(context);
-    createCommandBuffers(context);
 
-    // Record initial commands for each swapchain image
-    for (size_t i = 0; i < commandBuffers.size(); i++) {
+void CommandBuffers::init() {
+    createCommandPool();
 
-    }
+
 }
 
 void CommandBuffers::cleanup(VulkanContext& context) {
-    if (commandPool != VK_NULL_HANDLE) {
-        vkDestroyCommandPool(context.getDevice(), commandPool, nullptr);
-    }
+
+        vkDestroyCommandPool(VulkanContext::getDevice(), commandPool, nullptr);
+ 
 }
 
-VkCommandBuffer CommandBuffers::getCommandBuffer(size_t index) const {
+VkCommandBuffer CommandBuffers::getCommandBuffer(size_t index) {
     return commandBuffers[index];
 }
 
-void CommandBuffers::createCommandPool(VulkanContext& context) {
-    auto queueFamilyIndices = context.findQueueFamilies(context.getPhysicalDevice());
+void CommandBuffers::createCommandPool() {
+    QueueFamilyIndices queueFamilyIndices = Swapchain::findQueueFamilies(VulkanContext::getPhysicalDevice());
 
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
-    if (vkCreateCommandPool(context.getDevice(), &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create command pool!");
+    if (vkCreateCommandPool(VulkanContext::getDevice(), &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create graphics command pool!");
     }
 }
 
-void CommandBuffers::createCommandBuffers(VulkanContext& context) {
+void CommandBuffers::createCommandBuffers() {
     commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.commandPool = commandPool;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
+    allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
 
-    if (vkAllocateCommandBuffers(context.getDevice(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+    if (vkAllocateCommandBuffers(VulkanContext::getDevice(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
         throw std::runtime_error("failed to allocate command buffers!");
     }
 }
 
-void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, VertexBuffer& vertexBuffer, IndexBuffer& indexBuffer, uint32_t imageIndex, uint32_t frameIndex) {
-
-    VkCommandBuffer commandBuffer = commandBuffers[frameIndex];
-
+void CommandBuffers::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
     VkCommandBufferBeginInfo beginInfo{};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -60,53 +55,46 @@ void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swap
         throw std::runtime_error("failed to begin recording command buffer!");
     }
 
-    auto renderPass = pipeline.getRenderPass();
-    auto framebuffer = swapchain.getFramebuffers()[imageIndex];
-
-    if (renderPass == VK_NULL_HANDLE) {
-        throw std::runtime_error("RenderPass is VK_NULL_HANDLE in recordCommandBuffer");
-    }
-    if (framebuffer == VK_NULL_HANDLE) {
-        throw std::runtime_error("Framebuffer is VK_NULL_HANDLE in recordCommandBuffer");
-    }
-
     VkRenderPassBeginInfo renderPassInfo{};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderPassInfo.renderPass = renderPass;
-    renderPassInfo.framebuffer = framebuffer;
+    renderPassInfo.renderPass = Pipeline::getRenderPass();
+    renderPassInfo.framebuffer = Swapchain::getIndexFramebuffers(imageIndex);
     renderPassInfo.renderArea.offset = { 0, 0 };
-    renderPassInfo.renderArea.extent = swapchain.getExtent();
+    renderPassInfo.renderArea.extent = Swapchain::getExtent();
 
-    VkClearValue clearColor = { { 0.0f, 0.0f, 0.0f, 1.0f } };
+    VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
     renderPassInfo.clearValueCount = 1;
     renderPassInfo.pClearValues = &clearColor;
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-    // Bind pipeline
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.getGraphicsPipeline());
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline::getGraphicsPipeline());
 
-    // Viewport
     VkViewport viewport{};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
-    viewport.width = static_cast<float>(swapchain.getExtent().width);
-    viewport.height = static_cast<float>(swapchain.getExtent().height);
+    viewport.width = (float)Swapchain::getExtent().width;
+    viewport.height = (float)Swapchain::getExtent().height;
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
     vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
-    // Scissor
     VkRect2D scissor{};
     scissor.offset = { 0, 0 };
-    scissor.extent = swapchain.getExtent();
+    scissor.extent = Swapchain::getExtent();
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    vertexBuffer.bind(commandBuffer);
-    indexBuffer.bind(commandBuffer);
-    vkCmdDrawIndexed(commandBuffer, indexBuffer.getIndexCount(), 1, 0, 0, 0);
+    VkBuffer vertexBuffers[] = { VertexBuffer::getBuffer()};
+    VkDeviceSize offsets[] = { 0 };
+    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-    ImGuiVulkan::RenderDrawData(commandBuffer);
+    vkCmdBindIndexBuffer(commandBuffer, IndexBuffer::getIndexVertexCount(), 0, VK_INDEX_TYPE_UINT16);
+
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline::getPipelineLayout(), 0, 1, Descriptors::getdescriptorsetsIndex(SyncObjects::getCurrentFrame()), 0, nullptr);
+
+    //ImGuiVulkan::RenderDrawData(commandBuffer);
+
+    vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
     vkCmdEndRenderPass(commandBuffer);
 
@@ -114,8 +102,8 @@ void CommandBuffers::recordCommandBuffer(VulkanContext& context, Swapchain& swap
         throw std::runtime_error("failed to record command buffer!");
     }
 
-
-
 }
 
 
+VkCommandPool CommandBuffers::commandPool = VK_NULL_HANDLE;
+std::vector<VkCommandBuffer> CommandBuffers::commandBuffers;

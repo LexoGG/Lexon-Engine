@@ -1,24 +1,25 @@
 #pragma once
-
+#include "UniformBuffer.h"
 #include "VulkanContext.h"
 #include "Swapchain.h"
 #include "Vertex.h"
 
+
 class Pipeline {
 public:
-    void init(VulkanContext& context, Swapchain& swapchain);
+    void init();
     void cleanup(VulkanContext& context);
 
-    VkRenderPass getRenderPass() const;
-    VkPipeline getGraphicsPipeline() const;
-    VkPipelineLayout getPipelineLayout() const;
+    static VkRenderPass getRenderPass();
+    static VkPipeline getGraphicsPipeline() ;
+    static VkPipelineLayout getPipelineLayout() ;
 
 private:
-    void createRenderPass(VulkanContext& context, Swapchain& swapchain);
-    void createGraphicsPipeline(VulkanContext& context);
-    VkShaderModule createShaderModule(VulkanContext& context, const char* filepath);
+    void createRenderPass();
+    void createGraphicsPipeline();
+    VkShaderModule createShaderModule(const std::vector<char>& code);
 
-    VkRenderPass renderPass = VK_NULL_HANDLE;
-    VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
-    VkPipeline graphicsPipeline = VK_NULL_HANDLE;
+    static VkRenderPass renderPass;
+    static VkPipelineLayout pipelineLayout;
+    static VkPipeline graphicsPipeline;
 };

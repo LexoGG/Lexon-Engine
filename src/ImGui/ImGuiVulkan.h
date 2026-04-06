@@ -8,7 +8,7 @@ class Swapchain;
 
 namespace ImGuiVulkan {
 
-void Init(Window& window, VulkanContext& context, const Swapchain& swapchain, VkRenderPass renderPass);
+void Init(VulkanContext& context, const Swapchain& swapchain, VkRenderPass renderPass);
 void Shutdown(VkDevice device);
 
 void BeginFrame();

@@ -9,15 +9,25 @@
 #include "../Vulkan/SyncObjects.h"
 #include "../Vulkan/VertexBuffer.h"
 #include "../Vulkan/IndexBuffer.h"
+#include "../Vulkan/UniformBuffer.h"
+#include "../Vulkan/DescriptorPool.h"
+#include "../Assets/Square.h"
+#include "../ImGui/ImGuiVulkan.h"
+#include "../Core/ImguiHUD.h"
+#include "Globals.h"
+#include "imgui.h"
 
+#include <stdexcept>
+#include <iostream>
+#include <chrono>
 
 class Application {
 public:
     void run();
-
-
+   
 private:
-    void init();
+    void initWindow();
+    void initVulkan();
     void mainLoop();
     void cleanup();
 
@@ -29,7 +39,7 @@ private:
     SyncObjects syncObjects;
     VertexBuffer vertexBuffer;
     IndexBuffer indexBuffer;
-
-
+    UniformBuffer uniformbuffer;
+    Descriptors descriptors;
 
 };

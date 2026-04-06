@@ -6,29 +6,31 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include <vector>
-
+#include "../Assets/Square.h"
+#include "../Vulkan/DescriptorPool.h"
 
 
 class CommandBuffers {
 public:
-    void init(VulkanContext& context, Swapchain& swapchain);
+    void init();
     void cleanup(VulkanContext& context);
 
-    VkCommandBuffer getCommandBuffer(size_t index) const;
-    void recordCommandBuffer(VulkanContext& context, Swapchain& swapchain, Pipeline& pipeline, VertexBuffer& vertexBuffer, IndexBuffer& indexBuffer, uint32_t imageIndex, uint32_t frameIndex);
+    static VkCommandBuffer getCommandBuffer(size_t index);
+    static void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+    static VkCommandPool GetCommandPool() { return commandPool; };
+    void createCommandBuffers();
 
 
 
 private:
-    void createCommandPool(VulkanContext& context);
-    void createCommandBuffers(VulkanContext& context);
+    void createCommandPool();
 
 
 
 
-    VkCommandPool commandPool = VK_NULL_HANDLE;
-    std::vector<VkCommandBuffer> commandBuffers;
+
+    static VkCommandPool commandPool;
+    static std::vector<VkCommandBuffer> commandBuffers;
 
 
-    static const int MAX_FRAMES_IN_FLIGHT = 2;
 };

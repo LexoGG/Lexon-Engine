@@ -2,11 +2,13 @@
 #include <iostream>
 #include <cstdlib>  // Para system()
 
+
 int main() {
     Application app;
 
-    // Ejecuta el script para compilar shaders
-    system("shaders\\compileshaders.bat");
+	std::cout << "[!] Compilando shaders:" << std::endl;
+    system(shadersdir);
+    std::cout << std::endl << "Completado." << std::endl << std::endl;
 
     try {
         //Se lanza el inicio de la aplicacion

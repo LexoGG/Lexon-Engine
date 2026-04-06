@@ -5,19 +5,21 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 #include "Vertex.h"
+#include "../Assets/Square.h"
 
 class IndexBuffer {
 public:
-    void create(VkDevice device, VkPhysicalDevice physicalDevice, const std::vector<uint32_t>& indices);
-    void createUniformBuffer();
+    void createIndexBuffer();
+
     void destroy(VkDevice device);
-    void bind(VkCommandBuffer commandBuffer);
+    void bindIndex(VkCommandBuffer commandBuffer);
 
     uint32_t getIndexCount() const { return indexCount; }
+    static VkBuffer getIndexVertexCount() { return indexBuffer; }
 
 private:
-    VkBuffer buffer = VK_NULL_HANDLE;
-    VkDeviceMemory indexBufferMemory;
+    static VkBuffer indexBuffer;
+    VkDeviceMemory indexBufferMemory = VK_NULL_HANDLE;
 
     std::vector<VkBuffer> uniformBuffers;
     std::vector<VkDeviceMemory> uniformBuffersMemory;
