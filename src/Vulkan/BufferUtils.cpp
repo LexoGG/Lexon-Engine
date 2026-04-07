@@ -52,7 +52,7 @@ void BufferUtils::destroyBuffer(VkDevice device, VkBuffer& buffer, VkDeviceMemor
     }
 }
 
-void BufferUtils::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+VkCommandBuffer BufferUtils::beginSingleTimeCommands() {
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
@@ -68,9 +68,10 @@ void BufferUtils::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSiz
 
     vkBeginCommandBuffer(commandBuffer, &beginInfo);
 
-    VkBufferCopy copyRegion{};
-    copyRegion.size = size;
-    vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+    return commandBuffer;
+}
+
+void BufferUtils::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
 
     vkEndCommandBuffer(commandBuffer);
 
@@ -83,4 +84,14 @@ void BufferUtils::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSiz
     vkQueueWaitIdle(VulkanContext::getGraphicsQueue());
 
     vkFreeCommandBuffers(VulkanContext::getDevice(), CommandBuffers::GetCommandPool(), 1, &commandBuffer);
+}
+
+void BufferUtils::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+    VkCommandBuffer commandBuffer = beginSingleTimeCommands();
+
+    VkBufferCopy copyRegion{};
+    copyRegion.size = size;
+    vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+
+    endSingleTimeCommands(commandBuffer);
 }

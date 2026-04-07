@@ -3,6 +3,7 @@
 #include "../Vulkan/VulkanContext.h"
 #include "../Vulkan/UniformBuffer.h"
 #include "../Core/Globals.h"
+#include "../Assets/Textures.h"
 #include <stdexcept>
 # include <vector>
 #include <iostream>

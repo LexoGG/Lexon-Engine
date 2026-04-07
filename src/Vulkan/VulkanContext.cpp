@@ -1,9 +1,7 @@
 ﻿// VulkanContext.cpp
 #include "VulkanContext.h"
 
-#include <stdexcept>
-#include <iostream>
-#include <cstring>
+
 
 
 
@@ -183,6 +181,7 @@ void VulkanContext::createLogicalDevice() {
     }
 
     VkPhysicalDeviceFeatures deviceFeatures{};
+    deviceFeatures.samplerAnisotropy = VK_TRUE;
 
     VkDeviceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -325,7 +324,10 @@ bool VulkanContext::isDeviceSuitable(VkPhysicalDevice device) {
         swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
-    return indices.isComplete() && extensionsSupported && swapChainAdequate;
+    VkPhysicalDeviceFeatures supportedFeatures;
+    vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
+
+    return indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
 }
 
 bool VulkanContext::checkDeviceExtensionSupport(VkPhysicalDevice device) {

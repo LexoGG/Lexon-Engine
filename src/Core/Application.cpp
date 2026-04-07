@@ -44,11 +44,13 @@ void Application::initVulkan() {
     std::cout << "Creando los framebuffers" << std::endl;
     swapchain.createFramebuffers();  // ✅ renderPass ya existe
 
-    commandBuffers.init();
+
+    commandBuffers.init(); //createCommandPool
 
 
-
-
+    textura.createTextureImage();
+    textura.createTextureImageView();
+    textura.createTextureSampler();
 
     std::cout << "[!] Creando buffer de vertices: "<<std::endl;
     vertexBuffer.createVertexBuffer();

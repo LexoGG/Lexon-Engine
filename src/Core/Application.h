@@ -12,6 +12,7 @@
 #include "../Vulkan/UniformBuffer.h"
 #include "../Vulkan/DescriptorPool.h"
 #include "../Assets/Square.h"
+#include "../Assets/Textures.h"
 #include "../ImGui/ImGuiVulkan.h"
 #include "../Core/ImguiHUD.h"
 #include "Globals.h"
@@ -20,6 +21,8 @@
 #include <stdexcept>
 #include <iostream>
 #include <chrono>
+
+
 
 class Application {
 public:
@@ -41,5 +44,8 @@ private:
     IndexBuffer indexBuffer;
     UniformBuffer uniformbuffer;
     Descriptors descriptors;
+	Textures textura;   
+
+
 
 };

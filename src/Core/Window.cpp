@@ -10,7 +10,7 @@ void Window::init() {
 
     /* Esta función establece sugerencias para la siguiente llamada a glfwCreateWindow .
         Una vez establecidas, las sugerencias conservan sus valores hasta que se modifiquen
-        mediante una llamada a esta función o a glfwDefaultWindowHints , o hasta que se cierre la biblioteca.*/ 
+        mediante una llamada a esta función o a glfwDefaultWindowHints , o hasta que se cierre la biblioteca.*/ //glfwGetPrimaryMonitor()
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
     // Creacion de la ventana como objeto GLFWwindow*, definicion de tamaño y nombre

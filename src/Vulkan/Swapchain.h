@@ -4,7 +4,7 @@
 #include "VulkanContext.h"
 #include "../Core/Window.h"
 #include "Pipeline.h"
-
+#include "../Assets/Textures.h"
 #include <vector>
 
 struct QueueFamilyIndices {
