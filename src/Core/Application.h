@@ -11,6 +11,8 @@
 #include "../Vulkan/IndexBuffer.h"
 #include "../Vulkan/UniformBuffer.h"
 #include "../Vulkan/DescriptorPool.h"
+#include "../Vulkan/DephtBuffer.h"
+#include "../Math/MatrixCalc.h"
 #include "../Assets/Square.h"
 #include "../Assets/Textures.h"
 #include "../ImGui/ImGuiVulkan.h"
@@ -33,6 +35,7 @@ private:
     void initVulkan();
     void mainLoop();
     void cleanup();
+    void CheckInputs();
 
     Window window;
     VulkanContext context;
@@ -45,7 +48,7 @@ private:
     UniformBuffer uniformbuffer;
     Descriptors descriptors;
 	Textures textura;   
-
+    DepthBuffer depthbuffer;
 
 
 };

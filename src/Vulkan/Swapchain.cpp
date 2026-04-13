@@ -9,6 +9,7 @@
 void Swapchain::init(VulkanContext& context, Window& window) {
     createSwapchain();
     createImageViews();
+    DepthBuffer::createDepthResources();
 
 }
 
@@ -130,8 +131,8 @@ void Swapchain::createSwapchain() {
 void Swapchain::createImageViews() {
     swapChainImageViews.resize(swapChainImages.size());
 
-    for (size_t i = 0; i < swapChainImages.size(); i++) {
-        swapChainImageViews[i] = Textures::createImageView(swapChainImages[i], swapChainImageFormat);
+    for (uint32_t i = 0; i < swapChainImages.size(); i++) {
+        swapChainImageViews[i] = Textures::createImageView(swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
     }
 
 }
@@ -140,15 +141,16 @@ void Swapchain::createFramebuffers() {
     swapChainFramebuffers.resize(swapChainImageViews.size());
 
     for (size_t i = 0; i < swapChainImageViews.size(); i++) {
-        VkImageView attachments[] = {
-            swapChainImageViews[i]
+        std::array<VkImageView, 2> attachments = {
+            swapChainImageViews[i],
+            DepthBuffer::getdepthImageView()
         };
 
         VkFramebufferCreateInfo framebufferInfo{};
         framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
         framebufferInfo.renderPass = Pipeline::getRenderPass();
-        framebufferInfo.attachmentCount = 1;
-        framebufferInfo.pAttachments = attachments;
+        framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+        framebufferInfo.pAttachments = attachments.data();
         framebufferInfo.width = swapChainExtent.width;
         framebufferInfo.height = swapChainExtent.height;
         framebufferInfo.layers = 1;
@@ -161,6 +163,11 @@ void Swapchain::createFramebuffers() {
 
 
 void Swapchain::cleanupSwapChain() {
+
+    vkDestroyImageView(VulkanContext::getDevice(), DepthBuffer::getdepthImageView(), nullptr);
+    vkDestroyImage(VulkanContext::getDevice(), DepthBuffer::getdepthImage(), nullptr);
+    vkFreeMemory(VulkanContext::getDevice(), DepthBuffer::getdepthImageMemory(), nullptr);
+
     for (auto framebuffer : swapChainFramebuffers) {
         vkDestroyFramebuffer(VulkanContext::getDevice(), framebuffer, nullptr);
     }

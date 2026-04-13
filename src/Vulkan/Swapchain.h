@@ -5,6 +5,7 @@
 #include "../Core/Window.h"
 #include "Pipeline.h"
 #include "../Assets/Textures.h"
+#include "DephtBuffer.h"
 #include <vector>
 
 struct QueueFamilyIndices {

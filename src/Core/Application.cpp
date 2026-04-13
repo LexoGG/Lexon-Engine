@@ -42,10 +42,12 @@ void Application::initVulkan() {
     pipeline.init();// 🔄 crea el renderPass
 
     std::cout << "Creando los framebuffers" << std::endl;
-    swapchain.createFramebuffers();  // ✅ renderPass ya existe
 
 
     commandBuffers.init(); //createCommandPool
+
+    depthbuffer.createDepthResources();
+    swapchain.createFramebuffers();  // ✅ renderPass ya existe
 
 
     textura.createTextureImage();
@@ -82,12 +84,14 @@ void Application::mainLoop() {
 
     while (!window.shouldClose()) {
 
+
+        CheckInputs();
         window.pollEvents();
         syncObjects.drawFrame();
         InitImgui();
 
         frameCount++;
-
+    
     }
 
     vkDeviceWaitIdle(VulkanContext::getDevice());
@@ -125,5 +129,45 @@ void Application::cleanup() {
     window.cleanup();
 
 }
+
+void Application::CheckInputs() {
+
+    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(Window::getGLFWwindow(), GLFW_TRUE);
+    }
+
+    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_E) == GLFW_PRESS) {
+        UniformBuffer::CameraPositionInit[2] = UniformBuffer::CameraPositionInit[2] +  0.001f;
+    }
+
+    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_Q) == GLFW_PRESS) {
+        UniformBuffer::CameraPositionInit[2] = UniformBuffer::CameraPositionInit[2] - 0.001f;
+    }
+
+    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_A) == GLFW_PRESS) {
+        glm::vec3 directionmove = (glm::vec3(0.0f, 1.0f, 0.0f) / TamanoVector(UniformBuffer::CameraDirectionInit)) * (glm::vec3(0.0f, -0.001f,0.0f));
+        UniformBuffer::CameraPositionInit[1] = UniformBuffer::CameraPositionInit[1] + directionmove[1];
+    }
+
+    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_D) == GLFW_PRESS) {
+        UniformBuffer::CameraPositionInit[1] = UniformBuffer::CameraPositionInit[1] + 0.001f;
+    }
+
+    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_W) == GLFW_PRESS) {
+        glm::vec3 directionmove = (UniformBuffer::CameraDirectionInit / TamanoVector(UniformBuffer::CameraDirectionInit)) * glm::vec3(0.001f, 0.0f, 0.0f);
+        UniformBuffer::CameraPositionInit = UniformBuffer::CameraPositionInit + directionmove;
+    }
+
+    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS) {
+        UniformBuffer::CameraPositionInit[0] = UniformBuffer::CameraPositionInit[0] - 0.001f;
+    }
+
+
+
+
+
+
+
+};
 
 

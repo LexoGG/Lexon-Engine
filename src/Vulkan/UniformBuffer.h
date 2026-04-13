@@ -1,5 +1,6 @@
 #pragma once
 #define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -7,6 +8,7 @@
 
 #include <chrono>
 #include <vulkan/vulkan.h>
+
 
 
 struct UniformBufferObject {
@@ -29,6 +31,8 @@ public:
     VkDeviceSize getBufferSize();
     static std::vector<void*> uniformBuffersMapped;
     static std::vector<VkDeviceMemory> getuniformBuffersMemory();
+    static glm::vec3 CameraPositionInit;
+    static glm::vec3 CameraDirectionInit;
 
 
 private:

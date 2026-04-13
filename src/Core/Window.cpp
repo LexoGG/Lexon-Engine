@@ -1,6 +1,8 @@
 ﻿// Window.cpp
 #include "Window.h"
 #include <stdexcept>
+#define GLFW_KEY_ESCAPE
+#define GLFW_KEY_E
 
 void Window::init() {
 
