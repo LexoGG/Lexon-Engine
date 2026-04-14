@@ -70,7 +70,7 @@ void Application::initVulkan() {
     descriptors.createDescriptorSets();
 
     std::cout << "Creando el buffer de comandos" << std::endl;
-    commandBuffers.createCommandBuffers(); // ✅ DESPUÉS de que el buffer exista
+    commandBuffers.createCommandBuffers();
 
     std::cout << "Creando los semaforos" << std::endl;
     syncObjects.createSyncObjects();
@@ -139,14 +139,30 @@ void Application::CheckInputs() {
     }
 
     if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_E) == GLFW_PRESS) {
-        UniformBuffer::CameraPositionInit[2] = UniformBuffer::CameraPositionInit[2] +  0.001f;
+
+        unsigned imax = unsigned(LoaderModels::vertices.size());
+
+        for (unsigned i = 0; i < imax; i++) {           // ← aquí estaba el error
+            ImpulsoejeY(LoaderModels::vertices[i].pos, -0.001f);
+        }
+
+
+        //UniformBuffer::CameraPositionInit[2] = UniformBuffer::CameraPositionInit[2] +  0.001f;
     }
 
     if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_Q) == GLFW_PRESS) {
-        UniformBuffer::CameraPositionInit[2] = UniformBuffer::CameraPositionInit[2] - 0.001f;
+
+        unsigned imax = unsigned(LoaderModels::vertices.size());
+
+        for (unsigned i = 0; i < imax; i++) {
+            ImpulsoejeY(LoaderModels::vertices[i].pos, 0.001f);
+        }
+
+        //UniformBuffer::CameraPositionInit[2] = UniformBuffer::CameraPositionInit[2] - 0.001f;
     }
 
     if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_A) == GLFW_PRESS) {
+
         glm::vec3 directionmove = (glm::vec3(0.0f, 1.0f, 0.0f) / TamanoVector(UniformBuffer::CameraDirectionInit)) * (glm::vec3(0.0f, -0.001f,0.0f));
         UniformBuffer::CameraPositionInit[1] = UniformBuffer::CameraPositionInit[1] + directionmove[1];
     }
