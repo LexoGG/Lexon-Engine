@@ -1,7 +1,6 @@
 #include "SyncObjects.h"
-#include "../ImGui/ImGuiVulkan.h"
 #include <stdexcept>
-#include "../Vulkan/UniformBuffer.h"
+
 
 void SyncObjects::createSyncObjects() {
     imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);

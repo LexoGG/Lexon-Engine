@@ -140,10 +140,13 @@ void Swapchain::createImageViews() {
 void Swapchain::createFramebuffers() {
     swapChainFramebuffers.resize(swapChainImageViews.size());
 
+    VkImageView depthView = DepthBuffer::getdepthImageView();
+
+
     for (size_t i = 0; i < swapChainImageViews.size(); i++) {
         std::array<VkImageView, 2> attachments = {
             swapChainImageViews[i],
-            DepthBuffer::getdepthImageView()
+            depthView
         };
 
         VkFramebufferCreateInfo framebufferInfo{};

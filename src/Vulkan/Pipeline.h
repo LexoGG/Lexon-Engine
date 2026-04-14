@@ -4,7 +4,6 @@
 #include "Swapchain.h"
 #include "Vertex.h"
 
-
 class Pipeline {
 public:
     void init();

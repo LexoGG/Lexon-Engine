@@ -13,6 +13,7 @@
 #include "../Vulkan/DescriptorPool.h"
 #include "../Vulkan/DephtBuffer.h"
 #include "../Math/MatrixCalc.h"
+
 #include "../Assets/Square.h"
 #include "../Assets/Textures.h"
 #include "../ImGui/ImGuiVulkan.h"
@@ -49,6 +50,6 @@ private:
     Descriptors descriptors;
 	Textures textura;   
     DepthBuffer depthbuffer;
-
+    LoaderModels loadermodel;
 
 };

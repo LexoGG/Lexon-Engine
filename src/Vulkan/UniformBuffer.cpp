@@ -1,11 +1,5 @@
 #include "UniformBuffer.h"
-#include "CommandBuffers.h"
-#include "BufferUtils.h"  // Asegúrate de que esto esté presente
 
-# include <math.h>
-#include "VulkanContext.h"
-#include "Swapchain.h"
-#include "Pipeline.h"
 
 void UniformBuffer::createDescriptorSetLayout (VkDevice device) {
     VkDescriptorSetLayoutBinding uboLayoutBinding{};

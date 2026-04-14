@@ -54,13 +54,15 @@ void Application::initVulkan() {
     textura.createTextureImageView();
     textura.createTextureSampler();
 
+    loadermodel.loadModel();
+
     std::cout << "[!] Creando buffer de vertices: "<<std::endl;
     vertexBuffer.createVertexBuffer();
     
 
     std::cout << "[!] Cargando vertices: " << std::endl;
     indexBuffer.createIndexBuffer();
-    std::cout << "\t[INFO] Vertices cargados: " << vertices.size() << std::endl;
+    std::cout << "\t[INFO] Vertices cargados: " << LoaderModels::vertices.size() << std::endl;
 
     uniformbuffer.createUniformBuffers();
 

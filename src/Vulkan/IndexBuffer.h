@@ -1,11 +1,11 @@
 #pragma once
 
-#pragma once
+#include "BufferUtils.h"
 
 #include <vulkan/vulkan.h>
 #include <vector>
 #include "Vertex.h"
-#include "../Assets/Square.h"
+
 
 class IndexBuffer {
 public:

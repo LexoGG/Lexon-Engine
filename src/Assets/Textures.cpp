@@ -1,12 +1,12 @@
 #include "Textures.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-#include <filesystem>   // añádelo arriba con los demás includes
+#include "stb_image.h"
+
 
 void Textures::createTextureImage() {
     int texWidth, texHeight, texChannels;
-	stbi_uc* pixels = stbi_load("src/Textures/texture.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+	stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 	std::cout << "\t Cargando textura desde: " << "Textures/texture.jpg" << std::endl;
 	std::cout << "\t Dimensiones de la textura: " << texWidth << "x" << texHeight << std::endl;
 

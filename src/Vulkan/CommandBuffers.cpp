@@ -1,7 +1,6 @@
 #include "CommandBuffers.h"
-#include "../ImGui/ImGuiVulkan.h"
 #include <stdexcept>
-#include "SyncObjects.h"
+
 
 
 void CommandBuffers::init() {
@@ -91,13 +90,13 @@ void CommandBuffers::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
     VkDeviceSize offsets[] = { 0 };
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-    vkCmdBindIndexBuffer(commandBuffer, IndexBuffer::getIndexVertexCount(), 0, VK_INDEX_TYPE_UINT16);
+    vkCmdBindIndexBuffer(commandBuffer, IndexBuffer::getIndexVertexCount(), 0, VK_INDEX_TYPE_UINT32);
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline::getPipelineLayout(), 0, 1, Descriptors::getdescriptorsetsIndex(SyncObjects::getCurrentFrame()), 0, nullptr);
 
     //ImGuiVulkan::RenderDrawData(commandBuffer);
 
-    vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+    vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(LoaderModels::indices.size()), 1, 0, 0, 0);
 
     vkCmdEndRenderPass(commandBuffer);
 

@@ -4,7 +4,8 @@
 #include "Swapchain.h"
 #include "Pipeline.h"
 #include "CommandBuffers.h"
-
+#include "../Vulkan/UniformBuffer.h"
+#include "../ImGui/ImGuiVulkan.h"
 
 #include <vector>
 

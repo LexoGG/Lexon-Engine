@@ -1,10 +1,9 @@
 #include "Pipeline.h"
-#include "UniformBuffer.h"
 #include <stdexcept>
 #include <vector>
 #include <fstream>
-#include "../Core/Application.h"
 #include <iostream>
+
 
 static std::vector<char> readFile(const std::string& filename) {
     std::ifstream file(filename, std::ios::ate | std::ios::binary);

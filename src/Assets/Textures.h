@@ -6,6 +6,9 @@
 #include <iostream>
 
 
+#include <filesystem>   // añádelo arriba con los demás includes
+
+
 class Textures {
 
 public:

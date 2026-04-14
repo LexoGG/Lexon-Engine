@@ -1,8 +1,7 @@
 ﻿// Window.cpp
 #include "Window.h"
 #include <stdexcept>
-#define GLFW_KEY_ESCAPE
-#define GLFW_KEY_E
+
 
 void Window::init() {
 
@@ -16,7 +15,7 @@ void Window::init() {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
     // Creacion de la ventana como objeto GLFWwindow*, definicion de tamaño y nombre
-    window = glfwCreateWindow(WIDTH, HEIGHT, "Lexon Engine", glfwGetPrimaryMonitor(), nullptr);
+    window = glfwCreateWindow(WIDTH, HEIGHT, "Lexon Engine",nullptr, nullptr); //para pantalla completa  glfwGetPrimaryMonitor()
 
     // Si la variable window esta vacia, cierra la ventana y lanza un error
     if (!window) {

@@ -9,6 +9,13 @@
 #include <chrono>
 #include <vulkan/vulkan.h>
 
+#include "CommandBuffers.h"
+#include "BufferUtils.h"  // Asegúrate de que esto esté presente
+
+# include <math.h>
+#include "VulkanContext.h"
+
+#include "Pipeline.h"
 
 
 struct UniformBufferObject {

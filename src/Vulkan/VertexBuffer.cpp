@@ -8,7 +8,7 @@
 VkBuffer VertexBuffer::vertexBuffer = VK_NULL_HANDLE;
 
 void VertexBuffer::createVertexBuffer() {
-    VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+    VkDeviceSize bufferSize = sizeof(LoaderModels::vertices[0]) * LoaderModels::vertices.size();
 
     VkBuffer stagingBuffer;
     VkDeviceMemory stagingBufferMemory;
@@ -16,7 +16,7 @@ void VertexBuffer::createVertexBuffer() {
 
     void* data;
     vkMapMemory(VulkanContext::getDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-    memcpy(data, vertices.data(), (size_t)bufferSize);
+    memcpy(data, LoaderModels::vertices.data(), (size_t)bufferSize);
     vkUnmapMemory(VulkanContext::getDevice(), stagingBufferMemory);
 
     BufferUtils::createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);

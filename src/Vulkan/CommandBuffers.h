@@ -6,7 +6,9 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include <vector>
-#include "../Assets/Square.h"
+
+#include "SyncObjects.h"
+#include "../ImGui/ImGuiVulkan.h"
 #include "../Vulkan/DescriptorPool.h"
 
 
