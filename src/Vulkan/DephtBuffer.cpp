@@ -4,8 +4,8 @@
 void DepthBuffer::createDepthResources() {
     VkFormat depthFormat = findDepthFormat();
 
-    Textures::createImage(Swapchain::getExtent().width, Swapchain::getExtent().height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
-    depthImageView = Textures::createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+    Textures::createImage(Swapchain::getExtent().width, Swapchain::getExtent().height, 1, depthFormat,VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
+    depthImageView = Textures::createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,1);
 }
 
 VkFormat DepthBuffer::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
