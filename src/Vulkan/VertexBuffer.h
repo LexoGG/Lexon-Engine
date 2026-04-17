@@ -15,6 +15,7 @@ public:
     void createVertexBuffer();
     void destroy();
     void bind(VkCommandBuffer commandBuffer);
+    static void update();
 
     static VkBuffer getBuffer()  { return vertexBuffer; }
     static VkDeviceMemory getvertexbuffermemory() { return vertexBufferMemory; }
@@ -24,5 +25,7 @@ private:
     static VkBuffer vertexBuffer;
     static VkDeviceMemory vertexBufferMemory;
     uint32_t vertexCount = 0;
-
+    static VkBuffer       stagingBuffer ;
+    static VkDeviceMemory stagingBufferMemory;
+    static VkDeviceSize   vertexBufferSize;
 };

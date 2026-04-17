@@ -1,31 +1,34 @@
+﻿// src/Assets/Textures.cpp
 #include "Textures.h"
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-
 void Textures::createTextureImage() {
     int texWidth, texHeight, texChannels;
-	stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-	std::cout << "\t Cargando textura desde: " << "Textures/texture.jpg" << std::endl;
-	std::cout << "\t Dimensiones de la textura: " << texWidth << "x" << texHeight << std::endl;
+    stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 
-    VkDeviceSize imageSize = texWidth * texHeight*4;
-    mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
-    std::cout << "Miplevels:" << mipLevels << std::endl;
-
+    std::cout << "\t Cargando textura desde: " << TEXTURE_PATH << std::endl;
+    std::cout << "\t Dimensiones: " << texWidth << "x" << texHeight << std::endl;
 
     if (!pixels) {
-        std::cerr << "ERROR: stbi_load fallo. Motivo: " << stbi_failure_reason() << std::endl;
-        std::cout << "Directorio actual (working directory): "
-            << std::filesystem::current_path() << std::endl;
-
+        std::cerr << "ERROR: stbi_load fallo: " << stbi_failure_reason() << std::endl;
+        std::cout << "Directorio actual: " << std::filesystem::current_path() << std::endl;
         throw std::runtime_error("failed to load texture image!");
     }
 
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
-    BufferUtils::createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+    VkDeviceSize imageSize = texWidth * texHeight * 4ULL;
+
+    // Cálculo correcto de mip levels (ya lo tenías bien)
+    mipLevels = static_cast<uint32_t>(std::floor(std::log2(std::max(texWidth, texHeight)))) + 1;
+    std::cout << "Mip levels generados: " << mipLevels << std::endl;
+
+    // ==================== STAGING BUFFER (temporal) ====================
+    VkBuffer stagingBuffer{};
+    VkDeviceMemory stagingBufferMemory{};
+    BufferUtils::createBuffer(imageSize,
+        VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+        stagingBuffer, stagingBufferMemory);
 
     void* data;
     vkMapMemory(VulkanContext::getDevice(), stagingBufferMemory, 0, imageSize, 0, &data);
@@ -34,25 +37,38 @@ void Textures::createTextureImage() {
 
     stbi_image_free(pixels);
 
-    createImage(texWidth, texHeight, mipLevels, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
+    // ==================== CREACIÓN DE LA IMAGEN (CORREGIDO) ====================
+    VkImageUsageFlags usageFlags = VK_IMAGE_USAGE_TRANSFER_SRC_BIT |  // ← OBLIGATORIO para mipmaps
+        VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+        VK_IMAGE_USAGE_SAMPLED_BIT;
 
-    transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+    createImage(texWidth, texHeight, mipLevels,
+        VK_FORMAT_R8G8B8A8_SRGB,
+        VK_IMAGE_TILING_OPTIMAL,
+        usageFlags,
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+        textureImage, textureImageMemory);
+
+    // Transición inicial a TRANSFER_DST_OPTIMAL
+    transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB,
+        VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, mipLevels);
+
     copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
-    //transitioned to VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL while generating mipmaps
 
+    // Limpiar staging
     vkDestroyBuffer(VulkanContext::getDevice(), stagingBuffer, nullptr);
     vkFreeMemory(VulkanContext::getDevice(), stagingBufferMemory, nullptr);
 
+    // Generar mipmaps (ahora funciona porque tenemos TRANSFER_SRC_BIT y mipLevels correcto)
     generateMipmaps(textureImage, VK_FORMAT_R8G8B8A8_SRGB, texWidth, texHeight, mipLevels);
-
 }
 
 void Textures::createTextureImageView() {
     textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT, mipLevels);
-
-};
+}
 
 void Textures::createTextureSampler() {
+    // (tu código original está bien, solo lo dejo igual)
     VkPhysicalDeviceProperties properties{};
     vkGetPhysicalDeviceProperties(VulkanContext::getPhysicalDevice(), &properties);
 
@@ -77,7 +93,7 @@ void Textures::createTextureSampler() {
     if (vkCreateSampler(VulkanContext::getDevice(), &samplerInfo, nullptr, &textureSampler) != VK_SUCCESS) {
         throw std::runtime_error("failed to create texture sampler!");
     }
-};
+}
 
 VkImageView Textures::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels) {
     VkImageViewCreateInfo viewInfo{};
@@ -87,7 +103,7 @@ VkImageView Textures::createImageView(VkImage image, VkFormat format, VkImageAsp
     viewInfo.format = format;
     viewInfo.subresourceRange.aspectMask = aspectFlags;
     viewInfo.subresourceRange.baseMipLevel = 0;
-    viewInfo.subresourceRange.levelCount = mipLevels;
+    viewInfo.subresourceRange.levelCount = mipLevels;           // ← ahora usa mipLevels correcto
     viewInfo.subresourceRange.baseArrayLayer = 0;
     viewInfo.subresourceRange.layerCount = 1;
 
@@ -95,7 +111,6 @@ VkImageView Textures::createImageView(VkImage image, VkFormat format, VkImageAsp
     if (vkCreateImageView(VulkanContext::getDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
         throw std::runtime_error("failed to create image view!");
     }
-
     return imageView;
 }
 
@@ -179,29 +194,6 @@ void Textures::transitionImageLayout(VkImage image, VkFormat format, VkImageLayo
         0, nullptr,
         1, &barrier
     );
-
-    BufferUtils::endSingleTimeCommands(commandBuffer);
-}
-
-void Textures::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height) {
-    VkCommandBuffer commandBuffer = BufferUtils::beginSingleTimeCommands();
-
-    VkBufferImageCopy region{};
-    region.bufferOffset = 0;
-    region.bufferRowLength = 0;
-    region.bufferImageHeight = 0;
-    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    region.imageSubresource.mipLevel = 0;
-    region.imageSubresource.baseArrayLayer = 0;
-    region.imageSubresource.layerCount = 1;
-    region.imageOffset = { 0, 0, 0 };
-    region.imageExtent = {
-        width,
-        height,
-        1
-    };
-
-    vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
     BufferUtils::endSingleTimeCommands(commandBuffer);
 }
@@ -293,6 +285,29 @@ void Textures::generateMipmaps(VkImage image, VkFormat imageFormat, int32_t texW
     BufferUtils::endSingleTimeCommands(commandBuffer);
 }
 
-VkImageView Textures::textureImageView;
-VkSampler Textures::textureSampler;
-uint32_t Textures::mipLevels;
+ VkImageView Textures::textureImageView;
+ VkSampler Textures::textureSampler;
+ uint32_t Textures::mipLevels;
+
+void Textures::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height) {
+    VkCommandBuffer commandBuffer = BufferUtils::beginSingleTimeCommands();
+
+    VkBufferImageCopy region{};
+    region.bufferOffset = 0;
+    region.bufferRowLength = 0;
+    region.bufferImageHeight = 0;
+    region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = 1;
+    region.imageOffset = { 0, 0, 0 };
+    region.imageExtent = {
+        width,
+        height,
+        1
+    };
+
+    vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+    BufferUtils::endSingleTimeCommands(commandBuffer);
+}

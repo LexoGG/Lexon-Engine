@@ -139,15 +139,15 @@ void Application::CheckInputs() {
     }
 
     if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_E) == GLFW_PRESS) {
-
-        unsigned imax = unsigned(LoaderModels::vertices.size());
-
-        for (unsigned i = 0; i < imax; i++) {           // ← aquí estaba el error
+        std::cout << "Hola:" << LoaderModels::vertices.size() << std::endl;
+        for (size_t i = 0; i < LoaderModels::vertices.size(); ++i) {
             ImpulsoejeY(LoaderModels::vertices[i].pos, -0.001f);
+
         }
 
-
-        //UniformBuffer::CameraPositionInit[2] = UniformBuffer::CameraPositionInit[2] +  0.001f;
+        UniformBuffer::updateUniformBuffer(SyncObjects::getCurrentFrame());
+        //VertexBuffer::update();        // ← ¡esto es lo nuevo!
+    
     }
 
     if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_Q) == GLFW_PRESS) {

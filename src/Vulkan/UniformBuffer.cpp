@@ -49,7 +49,7 @@ void UniformBuffer::createUniformBuffers() {
 }
 
 glm::vec3 UniformBuffer::CameraPositionInit = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 UniformBuffer::CameraDirectionInit = glm::vec3(1.0f, 1.0f, 1.0f);
+glm::vec3 UniformBuffer::CameraDirectionInit = glm::vec3(2.0f, 2.0f, 2.0f);
 
 void UniformBuffer::updateUniformBuffer(uint32_t currentImage) {
     static auto startTime = std::chrono::high_resolution_clock::now();
@@ -59,14 +59,11 @@ void UniformBuffer::updateUniformBuffer(uint32_t currentImage) {
 
     UniformBufferObject ubo{};
     
+    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
-    ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(20.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    std::cout << "CameraDirectionInit: "<< CameraDirectionInit[0]<<" " << CameraDirectionInit[1] << " " << CameraDirectionInit[2] << std::endl;
-    std::cout << "CameraPositionInit: " << CameraPositionInit[0] << " " << CameraPositionInit[1] << " " << CameraPositionInit[2] << std::endl;
     ubo.view = glm::lookAt(CameraDirectionInit, CameraPositionInit, glm::vec3(0.0f, 0.0f, 1.0f));
 
-    ubo.proj = glm::perspective(glm::radians(90.0f), Swapchain::getExtent().width / (float)Swapchain::getExtent().height, 0.1f, 10.0f);
+    ubo.proj = glm::perspective(glm::radians(45.0f), Swapchain::getExtent().width / (float)Swapchain::getExtent().height, 0.1f, 10.0f);
     ubo.proj[1][1] *= -1;
 
     memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
