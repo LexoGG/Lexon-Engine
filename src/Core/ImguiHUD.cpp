@@ -21,7 +21,7 @@ void InitImgui() {
     static bool ventanaSaludoAbierta = true;
     if (ventanaSaludoAbierta) {
         if (ImGui::Begin("Hola Mundo", &ventanaSaludoAbierta)) {
-
+            ImGui::Button("Boton");
 
 
         }
@@ -30,3 +30,4 @@ void InitImgui() {
 
     ImGuiVulkan::EndFrame();
 };
+

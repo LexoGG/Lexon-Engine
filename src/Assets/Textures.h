@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-#include <filesystem>   // añádelo arriba con los demás includes
+#include <filesystem>   // aï¿½ï¿½delo arriba con los demï¿½s includes
 
 
 class Textures {

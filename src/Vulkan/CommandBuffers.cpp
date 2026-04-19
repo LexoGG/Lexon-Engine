@@ -94,16 +94,16 @@ void CommandBuffers::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline::getPipelineLayout(), 0, 1, Descriptors::getdescriptorsetsIndex(SyncObjects::getCurrentFrame()), 0, nullptr);
 
-    //ImGuiVulkan::RenderDrawData(commandBuffer);
+
 
     vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(LoaderModels::indices.size()), 1, 0, 0, 0);
+    ImGuiVulkan::RenderDrawData(commandBuffer);
 
     vkCmdEndRenderPass(commandBuffer);
 
     if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("failed to record command buffer!");
     }
-
 }
 
 

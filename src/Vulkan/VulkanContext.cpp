@@ -67,6 +67,7 @@ void VulkanContext::createInstance() {
         throw std::runtime_error("validation layers requested, but not available!");
     }
 
+
     VkApplicationInfo appInfo{};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = "Lexon Engine";

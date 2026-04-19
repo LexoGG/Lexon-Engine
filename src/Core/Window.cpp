@@ -1,6 +1,5 @@
 ﻿// Window.cpp
 #include "Window.h"
-#include <stdexcept>
 
 
 void Window::init() {
@@ -13,6 +12,7 @@ void Window::init() {
         Una vez establecidas, las sugerencias conservan sus valores hasta que se modifiquen
         mediante una llamada a esta función o a glfwDefaultWindowHints , o hasta que se cierre la biblioteca.*/ //glfwGetPrimaryMonitor()
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     // Creacion de la ventana como objeto GLFWwindow*, definicion de tamaño y nombre
     window = glfwCreateWindow(WIDTH, HEIGHT, "Lexon Engine",nullptr, nullptr); //para pantalla completa  glfwGetPrimaryMonitor()
