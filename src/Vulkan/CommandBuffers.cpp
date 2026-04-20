@@ -70,47 +70,63 @@ void CommandBuffers::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 
 
     ////
+// =============================================
+//  1. RENDER ESCENA AL OFFSCREEN (Viewport)
     OffscreenRenderer& offscreen = Application::GetOffscreenRenderer();
     offscreen.BeginRenderPass(commandBuffer);
 
-
+    // === TU CÓDIGO DE DIBUJO DE LA ESCENA (sin ImGui) ===
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline::getGraphicsPipeline());
 
     VkViewport viewport{};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
-    viewport.width = static_cast<float>(offscreen.GetWidth());
-    viewport.height = static_cast<float>(offscreen.GetHeight());
+    viewport.width = static_cast<float>(offscreen.GetWidth());     // ← CAMBIADO (importante)
+    viewport.height = static_cast<float>(offscreen.GetHeight());    // ← CAMBIADO (importante)
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
     vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
     VkRect2D scissor{};
     scissor.offset = { 0, 0 };
-    scissor.extent = { offscreen.GetWidth(), offscreen.GetHeight() };
+    scissor.extent = { offscreen.GetWidth(), offscreen.GetHeight() }; // ← CAMBIADO
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-    VkBuffer vertexBuffers[] = { VertexBuffer::getBuffer()};
+    VkBuffer vertexBuffers[] = { VertexBuffer::getBuffer() };
     VkDeviceSize offsets[] = { 0 };
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
     vkCmdBindIndexBuffer(commandBuffer, IndexBuffer::getIndexVertexCount(), 0, VK_INDEX_TYPE_UINT32);
 
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline::getPipelineLayout(), 0, 1, Descriptors::getdescriptorsetsIndex(SyncObjects::getCurrentFrame()), 0, nullptr);
+    VkDescriptorSet* descriptorSet =
+        Descriptors::getdescriptorsetsIndex(SyncObjects::getCurrentFrame());
 
-
+    vkCmdBindDescriptorSets(
+        commandBuffer,
+        VK_PIPELINE_BIND_POINT_GRAPHICS,
+        Pipeline::getPipelineLayout(),
+        0,
+        1,
+        descriptorSet,   // 👈 ESTO ES LA CLAVE
+        0,
+        nullptr
+    );
 
     vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(LoaderModels::indices.size()), 1, 0, 0, 0);
 
+    // Fin del dibujo de la escena
     offscreen.EndRenderPass(commandBuffer);
+
+    // =============================================
+    //  2. RENDER SWAPCHAIN (solo ImGui + fondo del editor)
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
     ImGuiVulkan::RenderDrawData(commandBuffer);
 
-
-    //////7
     vkCmdEndRenderPass(commandBuffer);
+
+
 
     if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("failed to record command buffer!");

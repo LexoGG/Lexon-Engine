@@ -16,6 +16,7 @@ public:
 
     uint32_t getIndexCount() const { return indexCount; }
     static VkBuffer getIndexVertexCount() { return indexBuffer; }
+    static VkBuffer getindexbuffer() { return indexBuffer; }
 
 private:
     static VkBuffer indexBuffer;

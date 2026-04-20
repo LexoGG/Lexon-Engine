@@ -79,7 +79,7 @@ void Application::initVulkan() {
     std::cout << "Inicializando ImGui" << std::endl;
     ImGuiVulkan::Init(context, swapchain, pipeline.getRenderPass());
 
-    Application::offscreenRenderer.Init();
+    offscreenRenderer.Init();
 }
 
 
@@ -192,4 +192,7 @@ void Application::CheckInputs() {
 
 }
 
+
+
+// Definición del miembro estático
 OffscreenRenderer Application::offscreenRenderer;

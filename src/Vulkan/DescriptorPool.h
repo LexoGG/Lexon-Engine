@@ -17,14 +17,11 @@ public:
 	void destroyDescriptorPool();
 	void destroyDescriptorSets();
 
-	std::vector<VkDescriptorSet> getdescriptorsets() {
+	static std::vector<VkDescriptorSet> getdescriptorsets() {		return descriptorSets;	}
 
-		return descriptorSets;
-	}
 
-	static VkDescriptorSet* getdescriptorsetsIndex(uint32_t indice) {
-
-		return &descriptorSets[indice];
+	static VkDescriptorSet* getdescriptorsetsIndex(uint32_t index) {
+		return &descriptorSets[index];
 	}
 
 

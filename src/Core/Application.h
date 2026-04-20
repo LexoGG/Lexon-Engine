@@ -55,6 +55,7 @@ private:
 	Textures textura;   
     DepthBuffer depthbuffer;
     LoaderModels loadermodel;
+
     static OffscreenRenderer offscreenRenderer;
 
 
