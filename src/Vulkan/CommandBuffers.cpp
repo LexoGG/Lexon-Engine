@@ -1,6 +1,6 @@
-#include "CommandBuffers.h"
+﻿#include "CommandBuffers.h"
 #include <stdexcept>
-
+#include "../Core/Application.h"
 
 
 void CommandBuffers::init() {
@@ -68,22 +68,26 @@ void CommandBuffers::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     renderPassInfo.pClearValues = clearValues.data();
 
-    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+    ////
+    OffscreenRenderer& offscreen = Application::GetOffscreenRenderer();
+    offscreen.BeginRenderPass(commandBuffer);
+
 
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline::getGraphicsPipeline());
 
     VkViewport viewport{};
     viewport.x = 0.0f;
     viewport.y = 0.0f;
-    viewport.width = (float)Swapchain::getExtent().width;
-    viewport.height = (float)Swapchain::getExtent().height;
+    viewport.width = static_cast<float>(offscreen.GetWidth());
+    viewport.height = static_cast<float>(offscreen.GetHeight());
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
     vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
     VkRect2D scissor{};
     scissor.offset = { 0, 0 };
-    scissor.extent = Swapchain::getExtent();
+    scissor.extent = { offscreen.GetWidth(), offscreen.GetHeight() };
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
     VkBuffer vertexBuffers[] = { VertexBuffer::getBuffer()};
@@ -97,8 +101,15 @@ void CommandBuffers::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
 
 
     vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(LoaderModels::indices.size()), 1, 0, 0, 0);
+
+    offscreen.EndRenderPass(commandBuffer);
+
+    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
     ImGuiVulkan::RenderDrawData(commandBuffer);
 
+
+    //////7
     vkCmdEndRenderPass(commandBuffer);
 
     if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {

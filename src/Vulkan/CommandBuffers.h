@@ -10,6 +10,7 @@
 #include "SyncObjects.h"
 #include "../ImGui/ImGuiVulkan.h"
 #include "../Vulkan/DescriptorPool.h"
+#include "../Renderer/OffscreenRenderer.h"
 
 
 

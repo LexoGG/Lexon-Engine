@@ -114,13 +114,27 @@ void InitImgui() {
     ImGui::End();
 
 
-    //ImGui::SetNextWindowBgAlpha(0.10f); // Transparent background
-    //if (ImGui::Begin("Viewport")) {
-    //   Window window2;
-    //    UniformBuffer::rotationvel;
-    //
-    //};
-    //ImGui::End();
+ // Transparent background
+    ImGui::Begin("Viewport");
+
+    ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+
+    if (viewportSize.x > 1.0f && viewportSize.y > 1.0f)
+    {
+        Application::GetOffscreenRenderer().Resize(
+            static_cast<uint32_t>(viewportSize.x),
+            static_cast<uint32_t>(viewportSize.y));
+
+        ImGui::Image(
+            Application::GetOffscreenRenderer().GetImGuiTexture(),
+            viewportSize);
+    }
+    else
+    {
+        ImGui::Text("Viewport demasiado pequeño");
+    }
+
+    ImGui::End();
 
     // Ventana de demo (para probar todo)
     // ImGui::ShowDemoWindow();

@@ -1,10 +1,6 @@
 ﻿// Swapchain.cpp
 #include "Swapchain.h"
-#include <stdexcept>
-#include <iostream>
 
-//Para el comando clamp
-#include <algorithm>
 
 void Swapchain::init(VulkanContext& context, Window& window) {
     createSwapchain();

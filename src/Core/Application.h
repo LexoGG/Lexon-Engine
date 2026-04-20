@@ -1,4 +1,4 @@
-// Application.h
+﻿// Application.h
 #pragma once
 
 #include "Window.h"
@@ -11,8 +11,9 @@
 #include "../Vulkan/IndexBuffer.h"
 #include "../Vulkan/UniformBuffer.h"
 #include "../Vulkan/DescriptorPool.h"
-#include "../Vulkan/DephtBuffer.h"
+#include "../Vulkan/DephtBuffer.h"  
 #include "../Math/MatrixCalc.h"
+#include "../Renderer/OffscreenRenderer.h"
 
 #include "../Assets/Square.h"
 #include "../Assets/Textures.h"
@@ -30,13 +31,16 @@
 class Application {
 public:
     void run();
-   
+    static OffscreenRenderer& GetOffscreenRenderer() { return offscreenRenderer; }
+
 private:
     void initWindow();
     void initVulkan();
     void mainLoop();
     void cleanup();
     void CheckInputs();
+
+
 
     Window window;
     VulkanContext context;
@@ -51,5 +55,7 @@ private:
 	Textures textura;   
     DepthBuffer depthbuffer;
     LoaderModels loadermodel;
+    static OffscreenRenderer offscreenRenderer;
+
 
 };

@@ -78,6 +78,8 @@ void Application::initVulkan() {
 
     std::cout << "Inicializando ImGui" << std::endl;
     ImGuiVulkan::Init(context, swapchain, pipeline.getRenderPass());
+
+    Application::offscreenRenderer.Init();
 }
 
 
@@ -102,6 +104,7 @@ void Application::mainLoop() {
 
 
 void Application::cleanup() {
+    offscreenRenderer.Cleanup();
     ///
     swapchain.cleanup(context);
     ///
@@ -187,6 +190,6 @@ void Application::CheckInputs() {
 
 
 
-};
+}
 
-
+OffscreenRenderer Application::offscreenRenderer;

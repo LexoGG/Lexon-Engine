@@ -7,6 +7,11 @@
 #include "../Assets/Textures.h"
 #include "DephtBuffer.h"
 #include <vector>
+#include <stdexcept>
+#include <iostream>
+
+//Para el comando clamp
+#include <algorithm>
 
 struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
