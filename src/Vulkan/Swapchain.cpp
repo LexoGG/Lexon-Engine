@@ -29,7 +29,12 @@ void Swapchain::recreate() {
 
     createSwapchain();
     createImageViews();
+    DepthBuffer::createDepthResources();
+
     createFramebuffers(); 
+
+    Window::resetResizedFlag();        
+
 }
 
 
@@ -238,7 +243,10 @@ void Swapchain::recreateSwapChain() {
 
     createSwapchain();
     createImageViews();
+    DepthBuffer::createDepthResources();
     createFramebuffers();
+
+    Window::resetResizedFlag();
 }
 
 VkFormat Swapchain::swapChainImageFormat;

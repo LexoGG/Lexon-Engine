@@ -3,6 +3,7 @@
 
 
 void Application::run() {
+
     // Se crea la ventana
 	initWindow();
 
@@ -86,11 +87,11 @@ void Application::mainLoop() {
 
     while (!window.shouldClose()) {
 
+        InitImgui();
 
         CheckInputs();
         window.pollEvents();
         syncObjects.drawFrame();
-        InitImgui();
 
         frameCount++;
     
@@ -146,7 +147,7 @@ void Application::CheckInputs() {
         }
 
         UniformBuffer::updateUniformBuffer(SyncObjects::getCurrentFrame());
-        //VertexBuffer::update();        // ← ¡esto es lo nuevo!
+        //VertexBuffer::update();      
     
     }
 
@@ -173,7 +174,7 @@ void Application::CheckInputs() {
 
     if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_W) == GLFW_PRESS) {
         glm::vec3 directionmove = (UniformBuffer::CameraDirectionInit / TamanoVector(UniformBuffer::CameraDirectionInit)) * glm::vec3(0.001f, 0.0f, 0.0f);
-        UniformBuffer::CameraPositionInit = UniformBuffer::CameraPositionInit + directionmove;
+        //UniformBuffer::CameraPositionInit = UniformBuffer::CameraPositionInit + directionmove;
     }
 
     if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS) {

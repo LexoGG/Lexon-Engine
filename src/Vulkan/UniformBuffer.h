@@ -38,8 +38,11 @@ public:
     VkDeviceSize getBufferSize();
     static std::vector<void*> uniformBuffersMapped;
     static std::vector<VkDeviceMemory> getuniformBuffersMemory();
-    static glm::vec3 CameraPositionInit;
+    //static glm::vec3 CameraPositionInit;
     static glm::vec3 CameraDirectionInit;
+    static float rotation[3];
+    static float CameraPositionInit[3];
+    //stglm::vec3 UniformBuffer::CameraPositionInit = glm::vec3(0.0f, 0.0f, 0.0f);
 
 
 private:

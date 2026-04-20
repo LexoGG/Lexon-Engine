@@ -4,9 +4,12 @@
 
 void Window::init() {
 
+    
+
     // Se inicializa la libreria de renderizado de ventanas GLFW
     glfwInit();
     
+    //glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 
     /* Esta función establece sugerencias para la siguiente llamada a glfwCreateWindow .
         Una vez establecidas, las sugerencias conservan sus valores hasta que se modifiquen
@@ -14,8 +17,9 @@ void Window::init() {
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
+
     // Creacion de la ventana como objeto GLFWwindow*, definicion de tamaño y nombre
-    window = glfwCreateWindow(WIDTH, HEIGHT, "Lexon Engine",nullptr, nullptr); //para pantalla completa  glfwGetPrimaryMonitor()
+    window = glfwCreateWindow(WIDTH, HEIGHT, "Lexon Engine", nullptr, nullptr); //para pantalla completa  glfwGetPrimaryMonitor()
 
     // Si la variable window esta vacia, cierra la ventana y lanza un error
     if (!window) {

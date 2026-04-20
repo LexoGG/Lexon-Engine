@@ -52,6 +52,8 @@ void Init(VulkanContext& context, const Swapchain& swapchain, VkRenderPass rende
     ImGui::StyleColorsDark();
 
     ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
     ImGui_ImplGlfw_InitForVulkan(Window::getGLFWwindow(), true);
