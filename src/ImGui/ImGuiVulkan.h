@@ -18,4 +18,9 @@ void RenderDrawData(VkCommandBuffer commandBuffer);
 
 void NotifySwapchainImageCount(uint32_t imageCount);
 
+VkDescriptorSet AddTexture(VkSampler sampler, VkImageView imageView,
+    VkImageLayout imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+void RemoveTexture(VkDescriptorSet descriptorSet);
+
 }  // namespace ImGuiVulkan

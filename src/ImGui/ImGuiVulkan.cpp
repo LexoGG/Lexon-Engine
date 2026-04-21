@@ -121,4 +121,16 @@ void NotifySwapchainImageCount(uint32_t imageCount) {
     ImGui_ImplVulkan_SetMinImageCount(std::max(2u, safeCount));
 }
 
+// === AÑADIR AL FINAL DEL ARCHIVO (dentro de namespace ImGuiVulkan) ===
+VkDescriptorSet AddTexture(VkSampler sampler, VkImageView imageView, VkImageLayout imageLayout) {
+    return ImGui_ImplVulkan_AddTexture(sampler, imageView, imageLayout);
+}
+
+void RemoveTexture(VkDescriptorSet descriptorSet) {
+    if (descriptorSet != VK_NULL_HANDLE) {
+        VkDevice device = VulkanContext::getDevice();
+        vkFreeDescriptorSets(device, g_DescriptorPool, 1, &descriptorSet);
+    }
+}
+
 }  // namespace ImGuiVulkan

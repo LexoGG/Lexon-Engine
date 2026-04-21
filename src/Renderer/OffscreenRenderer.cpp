@@ -3,6 +3,8 @@
 
 void OffscreenRenderer::Init() {
     CreateRenderPass();
+    CreateSampler();        // ← nuevo
+
 }
 
 void OffscreenRenderer::Resize(uint32_t width, uint32_t height) {
@@ -29,7 +31,7 @@ void OffscreenRenderer::CreateRenderPass() {
     colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
     colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
     colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
     VkAttachmentDescription depthAttachment{};
     depthAttachment.format = DepthBuffer::findDepthFormat();
@@ -129,10 +131,22 @@ void OffscreenRenderer::CreateResources() {
     if (vkCreateFramebuffer(VulkanContext::getDevice(), &framebufferInfo, nullptr, &m_Framebuffer) != VK_SUCCESS) {
         throw std::runtime_error("Failed to create offscreen framebuffer!");
     }
+
+    // === NUEVO: crear descriptor set para ImGui ===
+    if (m_DescriptorSet != VK_NULL_HANDLE) {
+        ImGuiVulkan::RemoveTexture(m_DescriptorSet);
+    }
+    m_DescriptorSet = ImGuiVulkan::AddTexture(m_Sampler, m_ColorImageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 }
 
 void OffscreenRenderer::CleanupResources() {
     VkDevice device = VulkanContext::getDevice();
+
+    // === NUEVO: liberar descriptor set ANTES de destruir el ImageView ===
+    if (m_DescriptorSet != VK_NULL_HANDLE) {
+        ImGuiVulkan::RemoveTexture(m_DescriptorSet);
+        m_DescriptorSet = VK_NULL_HANDLE;
+    }
 
     if (m_Framebuffer != VK_NULL_HANDLE) {
         vkDestroyFramebuffer(device, m_Framebuffer, nullptr);
@@ -192,9 +206,45 @@ void OffscreenRenderer::EndRenderPass(VkCommandBuffer cmdBuffer) {
 }
 
 void OffscreenRenderer::Cleanup() {
-    CleanupResources();
+    VkDevice device = VulkanContext::getDevice();
+
+    if (m_DescriptorSet != VK_NULL_HANDLE) {
+        ImGuiVulkan::RemoveTexture(m_DescriptorSet);
+        m_DescriptorSet = VK_NULL_HANDLE;
+    }
+
+    if (m_Sampler != VK_NULL_HANDLE) {
+        vkDestroySampler(device, m_Sampler, nullptr);
+        m_Sampler = VK_NULL_HANDLE;
+    }
+
+    CleanupResources();  // ya destruye el resto
+
     if (m_OffscreenRenderPass != VK_NULL_HANDLE) {
-        vkDestroyRenderPass(VulkanContext::getDevice(), m_OffscreenRenderPass, nullptr);
+        vkDestroyRenderPass(device, m_OffscreenRenderPass, nullptr);
         m_OffscreenRenderPass = VK_NULL_HANDLE;
+    }
+}
+
+void OffscreenRenderer::CreateSampler() {
+    VkSamplerCreateInfo samplerInfo{};
+    samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+    samplerInfo.magFilter = VK_FILTER_LINEAR;
+    samplerInfo.minFilter = VK_FILTER_LINEAR;
+    samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    samplerInfo.anisotropyEnable = VK_FALSE;
+    samplerInfo.maxAnisotropy = 1.0f;
+    samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+    samplerInfo.unnormalizedCoordinates = VK_FALSE;
+    samplerInfo.compareEnable = VK_FALSE;
+    samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+    samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+    samplerInfo.minLod = 0.0f;
+    samplerInfo.maxLod = 0.0f;
+
+    if (vkCreateSampler(VulkanContext::getDevice(), &samplerInfo, nullptr, &m_Sampler) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create offscreen sampler!");
     }
 }

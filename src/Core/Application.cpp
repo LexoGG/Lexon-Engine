@@ -95,11 +95,15 @@ void Application::mainLoop() {
         window.pollEvents();
         syncObjects.drawFrame();
 
+
+
         frameCount++;
     
     }
 
     vkDeviceWaitIdle(VulkanContext::getDevice());
+
+
 }
 
 
@@ -119,7 +123,7 @@ void Application::cleanup() {
     }
 
     ///
-    descriptors.destroyDescriptorPool();
+    descriptors.destroyDescriptorPool();//Testeoaqui
     descriptors.destroyDescriptorSets();
     ///
     indexBuffer.destroy(VulkanContext::getDevice());

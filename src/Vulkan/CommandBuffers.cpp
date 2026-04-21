@@ -107,7 +107,7 @@ void CommandBuffers::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
         Pipeline::getPipelineLayout(),
         0,
         1,
-        descriptorSet,   // 👈 ESTO ES LA CLAVE
+        descriptorSet, 
         0,
         nullptr
     );
