@@ -43,6 +43,10 @@ public:
     static float rotation[3];
     static float CameraPositionInit[3];
     //stglm::vec3 UniformBuffer::CameraPositionInit = glm::vec3(0.0f, 0.0f, 0.0f);
+    //static glm::vec3 objectPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+
+    static float objectPosition[3];
+    static float objectScale[3];
 
 
 private:

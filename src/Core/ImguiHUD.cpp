@@ -99,10 +99,10 @@ void InitImgui() {
 
     ImGui::Begin("Inspector");
     //float rotation[3] = { UniformBuffer::CameraPositionInit.x, UniformBuffer::CameraPositionInit.x, UniformBuffer::CameraPositionInit.x };
-    ImGui::DragFloat3("Posicion",UniformBuffer::CameraPositionInit);
-
-
+    ImGui::DragFloat3("Posicion", UniformBuffer::objectPosition);
     ImGui::DragFloat3("Giro",UniformBuffer::rotation);
+    ImGui::DragFloat3("Escala", UniformBuffer::objectScale);
+
 
     ImGui::Text("Propiedades del objeto seleccionado");
     ImGui::Separator();
@@ -141,6 +141,12 @@ void InitImgui() {
 
     ImGuiVulkan::EndFrame();
 
-    ImGui::UpdatePlatformWindows();
+    ImGuiIO& io = ImGui::GetIO();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+        GLFWwindow* backup_current_context = glfwGetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backup_current_context);
+    }
 };
 
