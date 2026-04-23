@@ -8,7 +8,7 @@
 
 class LoaderModels {
 public:
-    void loadModel();
+    static void loadModel(std::string name, std::string MODEL_PATH);
     static std::vector<Vertex> vertices;
     static std::vector<uint32_t> indices;
 

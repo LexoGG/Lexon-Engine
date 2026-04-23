@@ -32,6 +32,8 @@ class Application {
 public:
     void run();
     static OffscreenRenderer& GetOffscreenRenderer() { return offscreenRenderer; }
+    static float deltaTime;
+
 
 private:
     void initWindow();

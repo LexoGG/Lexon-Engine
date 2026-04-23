@@ -89,20 +89,21 @@ void Init(VulkanContext& context, const Swapchain& swapchain, VkRenderPass rende
 
 void Shutdown(VkDevice device) {
     ImGui_ImplVulkan_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+
 
     if (g_DescriptorPool != VK_NULL_HANDLE) {
         vkDestroyDescriptorPool(device, g_DescriptorPool, nullptr);
         g_DescriptorPool = VK_NULL_HANDLE;
     }
 
-    ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 }
 
 void BeginFrame() {
 
-    ImGui_ImplVulkan_NewFrame();
     ImGui_ImplGlfw_NewFrame();
+    ImGui_ImplVulkan_NewFrame();
     ImGui::NewFrame();
 }
 

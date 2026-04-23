@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../Core/Window.h" 
 #include <vulkan/vulkan.h>
 
 class Window;
@@ -8,7 +8,9 @@ class Swapchain;
 
 namespace ImGuiVulkan {
 
+//void Init(VulkanContext& context, const Swapchain& swapchain, VkRenderPass renderPass);
 void Init(VulkanContext& context, const Swapchain& swapchain, VkRenderPass renderPass);
+
 void Shutdown(VkDevice device);
 
 void BeginFrame();

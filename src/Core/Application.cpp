@@ -55,7 +55,11 @@ void Application::initVulkan() {
     textura.createTextureImageView();
     textura.createTextureSampler();
 
-    loadermodel.loadModel();
+
+
+    loadermodel.loadModel("viking room", MODEL_PATH);
+    loadermodel.loadModel("viking room 2", MODEL_PATH);
+
 
     std::cout << "[!] Creando buffer de vertices: "<<std::endl;
     vertexBuffer.createVertexBuffer();
@@ -89,10 +93,20 @@ void Application::mainLoop() {
 
     while (!window.shouldClose()) {
 
+
+
         InitImgui();
 
         CheckInputs();
         window.pollEvents();
+
+        // === CÁLCULO DEL DELTA TIME ===
+        static double lastTime = glfwGetTime();
+        double currentTime = glfwGetTime();
+        deltaTime = static_cast<float>(currentTime - lastTime);
+        std::cout << "Delta Time: " << deltaTime << std::endl;
+        lastTime = currentTime;
+
         syncObjects.drawFrame();
 
 
@@ -200,3 +214,4 @@ void Application::CheckInputs() {
 
 // Definición del miembro estático
 OffscreenRenderer Application::offscreenRenderer;
+float Application::deltaTime;

@@ -1,9 +1,9 @@
-﻿
+﻿#include "../Renderer/SceneMaster.h"
 #include "ImguiHUD.h"
 
 void InitImgui() {
 
-    //ImGuiVulkan::BeginFrame();
+
     ImGui::NewFrame();
 
 
@@ -37,7 +37,9 @@ void InitImgui() {
     {
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("Load Model")) { /* TODO: cargar modelo */ }
+            if (ImGui::MenuItem("Load Model")) {
+                LoaderModels::loadModel("cubo", MODEL_PATHC);
+            }
             if (ImGui::MenuItem("Exit")) { /* glfwSetWindowShouldClose */ }
             ImGui::EndMenu();
         }
@@ -77,10 +79,12 @@ void InitImgui() {
     if (ventanaSaludoAbierta) {
         if (ImGui::Begin("Hola Mundo", &ventanaSaludoAbierta), ImGuiWindowFlags_NoTitleBar) {
 
+            ImGui::Text("Delta Time: (%g)", Application::deltaTime);
+            ImGui::Text("FPS: (%g)", 1.0f/Application::deltaTime);
+
+
             if (ImGui::Button("Boton")) {
                 // Acción a realizar cuando se presiona el botón
-                Window window2;
-                window2.init();
                 std::cout<<"Boton presionado\n";
             }
 
@@ -89,16 +93,26 @@ void InitImgui() {
         ImGui::End();
     }
 
+    //ImGui::Separator();
     // ── Tus ventanas dockeables (puedes moverlas y pegarlas a los bordes) ──
     ImGui::Begin("Scene Hierarchy");
-    ImGui::Text("Objetos en la escena");
-    ImGui::Separator();
+    
+
+    for (unsigned i = 0; i <= SceneMaster::SceneMesheslist.size()-1; i++){
+
+        ImGui::Selectable(SceneMaster::SceneMesheslist[i].name.c_str());
+
+
+        
+
+        };
+    //ImGui::Separator();
     // Aquí irán los GameObjects más adelante
     ImGui::End();
 
 
     ImGui::Begin("Inspector");
-    //float rotation[3] = { UniformBuffer::CameraPositionInit.x, UniformBuffer::CameraPositionInit.x, UniformBuffer::CameraPositionInit.x };
+
     ImGui::DragFloat3("Posicion", UniformBuffer::objectPosition);
     ImGui::DragFloat3("Giro",UniformBuffer::rotation);
     ImGui::DragFloat3("Escala", UniformBuffer::objectScale);
@@ -141,8 +155,9 @@ void InitImgui() {
 
     ImGuiVulkan::EndFrame();
 
-    ImGuiIO& io = ImGui::GetIO();
-    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+    const ImGuiIO& io = ImGui::GetIO();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
         GLFWwindow* backup_current_context = glfwGetCurrentContext();
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();

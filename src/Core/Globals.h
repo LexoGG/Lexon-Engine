@@ -20,6 +20,7 @@ static const std::vector<const char*> deviceExtensions = {
     VK_KHR_SWAPCHAIN_EXTENSION_NAME
 };
 
+static const std::string MODEL_PATHC = "Objects/cubo.obj";
 
 static const std::string MODEL_PATH = "Objects/viking_room.obj";
 static const std::string TEXTURE_PATH = "Objects/viking_room.png";

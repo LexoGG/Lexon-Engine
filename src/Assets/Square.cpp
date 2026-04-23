@@ -1,10 +1,11 @@
 ﻿//Siempre en el cpp se incluye el h
 #include "Square.h"
+#include "../Renderer/SceneMaster.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-void LoaderModels::loadModel() {
+void LoaderModels::loadModel(std::string newname, std::string MODEL_PATH) {
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
@@ -13,6 +14,10 @@ void LoaderModels::loadModel() {
     if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str())) {
         throw std::runtime_error(err);
     }
+
+    StaticMesh mesh;
+    mesh.changeName(newname);
+    SceneMaster::AddMeshToList(mesh);
 
     std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 
