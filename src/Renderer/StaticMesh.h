@@ -8,12 +8,20 @@
 class StaticMesh {
 public:
     std::string changeName(std::string newname);
-
+    static void getModelMatrix(glm::mat4 &model);
     std::string name;
 
-    glm::vec3 position = glm::vec3(0.0f);
-    glm::vec3 rotation = glm::vec3(0.0f);
-    glm::vec3 scale = glm::vec3(1.0f);
+    static float position[3];
+    //static glm::vec3 position;
+    static float rotation[3];
+    static float scale[3];
+
+    std::vector<VkBuffer> uniformBuffers;
+    std::vector<VkDeviceMemory> uniformBuffersMemory;
+    std::vector<void*> uniformBuffersMapped;
+
+    // Descriptor sets for this object (one per frame in flight)
+    std::vector<VkDescriptorSet> descriptorSets;
 
     // Vulkan buffers
     VkBuffer vertexBuffer = VK_NULL_HANDLE;
@@ -21,6 +29,9 @@ public:
     VkBuffer indexBuffer = VK_NULL_HANDLE;
     VkDeviceMemory indexMemory = VK_NULL_HANDLE;
 
+    static std::unordered_map<Vertex, uint32_t> DataMesh;
+
+    VkDescriptorSet descriptorsets;
     uint32_t indexCount = 0;
 
 

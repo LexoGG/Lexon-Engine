@@ -32,7 +32,7 @@ void InitImgui() {
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f),
         ImGuiDockNodeFlags_PassthruCentralNode);  // permite ver el 3D detrás
 
-    // Menú superior (opcional pero útil)
+    // Menú superior 
     if (ImGui::BeginMenuBar())
     {
         if (ImGui::BeginMenu("File"))
@@ -113,9 +113,9 @@ void InitImgui() {
 
     ImGui::Begin("Inspector");
 
-    ImGui::DragFloat3("Posicion", UniformBuffer::objectPosition);
-    ImGui::DragFloat3("Giro",UniformBuffer::rotation);
-    ImGui::DragFloat3("Escala", UniformBuffer::objectScale);
+    ImGui::DragFloat3("Posicion", StaticMesh::position);
+    ImGui::DragFloat3("Giro", StaticMesh::rotation);
+    ImGui::DragFloat3("Escala", StaticMesh::scale);
 
 
     ImGui::Text("Propiedades del objeto seleccionado");

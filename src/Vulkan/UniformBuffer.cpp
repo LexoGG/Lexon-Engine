@@ -1,4 +1,5 @@
 ﻿#include "UniformBuffer.h"
+#include "../Renderer/StaticMesh.h"
 
 
 void UniformBuffer::createDescriptorSetLayout (VkDevice device) {
@@ -48,7 +49,6 @@ void UniformBuffer::createUniformBuffers() {
     }
 }
 
-glm::vec3 UniformBuffer::CameraDirectionInit = glm::vec3(2.0f, 2.0f, 2.0f);
 
 void UniformBuffer::updateUniformBuffer(uint32_t currentImage) {
     static auto startTime = std::chrono::high_resolution_clock::now();
@@ -58,27 +58,12 @@ void UniformBuffer::updateUniformBuffer(uint32_t currentImage) {
 
     UniformBufferObject ubo{};
     
-    glm::vec3 objectPositionvec = glm::vec3(objectPosition[0] / 100, objectPosition[1] / 100, objectPosition[2] / 100);
-    glm::vec3 objectScalevec = glm::vec3(objectScale[0], objectScale[1], objectScale[2]);
-    
-    //rotacion
-    glm::mat4 modelx = glm::rotate(glm::mat4(1.0f), glm::radians(rotation[0]), glm::vec3(1.0f, 0.0f, 0.0f));
-    glm::mat4 modely = glm::rotate(glm::mat4(1.0f), glm::radians(rotation[1]), glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 modelz = glm::rotate(glm::mat4(1.0f), glm::radians(rotation[2]), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    StaticMesh::getModelMatrix(ubo.model);
 
 
 
-    //movimiento
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), objectPositionvec);   // ← traslación primero
-
-    //escalado
-    glm::mat4 modelscale = glm::scale(glm::mat4(1.0f), objectScalevec); 
-
-    ubo.model = model * modelx * modely * modelz * modelscale;
-
-
-
-    glm::mat4 posmodelz = glm::lookAt(CameraDirectionInit, glm::vec3(CameraPositionInit[2] / 10), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 posmodelz = glm::lookAt(CameraDirectionInit, glm::vec3(CameraPositionInit[2]), glm::vec3(0.0f, 0.0f, 1.0f));
     ubo.view = posmodelz;
 
 
@@ -117,7 +102,8 @@ std::vector<void*> UniformBuffer::uniformBuffersMapped;
 std::vector<VkDeviceMemory> UniformBuffer::uniformBuffersMemory;
 float UniformBuffer::rotation[3] = { 0.0f, 0.0f, 0.0f };
 float UniformBuffer::CameraPositionInit[3] = {0.0f, 0.0f, 0.0f};
-//glm::vec3 UniformBuffer::objectPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 UniformBuffer::CameraDirectionInit = glm::vec3(2.0f, 2.0f, 2.0f);
+
 float UniformBuffer::objectPosition[3] = { 0.0f, 0.0f, 0.0f };
 float UniformBuffer::objectScale[3] = { 1.0f, 1.0f, 1.0f };
 

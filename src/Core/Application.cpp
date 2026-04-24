@@ -51,19 +51,17 @@ void Application::initVulkan() {
     swapchain.createFramebuffers();  // ✅ renderPass ya existe
 
 
-    textura.createTextureImage();
-    textura.createTextureImageView();
-    textura.createTextureSampler();
+
 
 
 
     loadermodel.loadModel("viking room", MODEL_PATH);
-    loadermodel.loadModel("viking room 2", MODEL_PATH);
-
+    textura.createTextureImage();
+    textura.createTextureImageView();
+    textura.createTextureSampler();
 
     std::cout << "[!] Creando buffer de vertices: "<<std::endl;
     vertexBuffer.createVertexBuffer();
-    
 
     std::cout << "[!] Cargando vertices: " << std::endl;
     indexBuffer.createIndexBuffer();
@@ -93,12 +91,11 @@ void Application::mainLoop() {
 
     while (!window.shouldClose()) {
 
-
-
         InitImgui();
-
         CheckInputs();
         window.pollEvents();
+        syncObjects.drawFrame();
+
 
         // === CÁLCULO DEL DELTA TIME ===
         static double lastTime = glfwGetTime();
@@ -106,8 +103,6 @@ void Application::mainLoop() {
         deltaTime = static_cast<float>(currentTime - lastTime);
         std::cout << "Delta Time: " << deltaTime << std::endl;
         lastTime = currentTime;
-
-        syncObjects.drawFrame();
 
 
 
@@ -164,42 +159,9 @@ void Application::CheckInputs() {
         std::cout << "Hola:" << LoaderModels::vertices.size() << std::endl;
         for (size_t i = 0; i < LoaderModels::vertices.size(); ++i) {
             ImpulsoejeY(LoaderModels::vertices[i].pos, -0.001f);
-
+            UniformBuffer::CameraPositionInit[2];
         }
 
-        UniformBuffer::updateUniformBuffer(SyncObjects::getCurrentFrame());
-        //VertexBuffer::update();      
-    
-    }
-
-    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_Q) == GLFW_PRESS) {
-
-        unsigned imax = unsigned(LoaderModels::vertices.size());
-
-        for (unsigned i = 0; i < imax; i++) {
-            ImpulsoejeY(LoaderModels::vertices[i].pos, 0.001f);
-        }
-
-        //UniformBuffer::CameraPositionInit[2] = UniformBuffer::CameraPositionInit[2] - 0.001f;
-    }
-
-    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_A) == GLFW_PRESS) {
-
-        glm::vec3 directionmove = (glm::vec3(0.0f, 1.0f, 0.0f) / TamanoVector(UniformBuffer::CameraDirectionInit)) * (glm::vec3(0.0f, -0.001f,0.0f));
-        UniformBuffer::CameraPositionInit[1] = UniformBuffer::CameraPositionInit[1] + directionmove[1];
-    }
-
-    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_D) == GLFW_PRESS) {
-        UniformBuffer::CameraPositionInit[1] = UniformBuffer::CameraPositionInit[1] + 0.001f;
-    }
-
-    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_W) == GLFW_PRESS) {
-        glm::vec3 directionmove = (UniformBuffer::CameraDirectionInit / TamanoVector(UniformBuffer::CameraDirectionInit)) * glm::vec3(0.001f, 0.0f, 0.0f);
-        //UniformBuffer::CameraPositionInit = UniformBuffer::CameraPositionInit + directionmove;
-    }
-
-    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS) {
-        UniformBuffer::CameraPositionInit[0] = UniformBuffer::CameraPositionInit[0] - 0.001f;
     }
 
 

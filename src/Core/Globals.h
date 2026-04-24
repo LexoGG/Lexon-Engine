@@ -7,8 +7,8 @@
 
 static const char *shadersdir = "shaders\\compileshaders.bat";
 
-static const uint32_t WIDTH = uint32_t(1920.0f*0.8f);
-static const uint32_t HEIGHT = uint32_t(1080.0f*0.8f);
+static const uint32_t WIDTH = uint32_t(1920.0f*1.0f);
+static const uint32_t HEIGHT = uint32_t(1080.0f*1.0f);
 
 static const int MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -24,4 +24,6 @@ static const std::string MODEL_PATHC = "Objects/cubo.obj";
 
 static const std::string MODEL_PATH = "Objects/viking_room.obj";
 static const std::string TEXTURE_PATH = "Objects/viking_room.png";
+
+
 

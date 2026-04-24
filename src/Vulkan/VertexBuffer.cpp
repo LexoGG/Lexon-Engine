@@ -4,12 +4,19 @@
 #include <cstring>
 #include <stdexcept>
 #include <iostream>
+#include "../Renderer/SceneMaster.h"
 
 VkBuffer VertexBuffer::vertexBuffer = VK_NULL_HANDLE;
 
 void VertexBuffer::createVertexBuffer() {
-    vertexBufferSize = sizeof(LoaderModels::vertices[0]) * LoaderModels::vertices.size();
 
+    SceneMaster::SceneMesheslist;
+
+    for (auto& gameObject : SceneMaster::SceneMesheslist) {
+
+        vertexBufferSize = sizeof(LoaderModels::vertices[0]) * LoaderModels::vertices.size();
+
+    }
     // 1. Staging buffer persistente (solo se crea una vez)
     BufferUtils::createBuffer(vertexBufferSize,
         VK_BUFFER_USAGE_TRANSFER_SRC_BIT,

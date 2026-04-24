@@ -1,5 +1,8 @@
 ﻿// Application.h
 #pragma once
+#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_raii.hpp>
+
 
 #include "Window.h"
 #include "../Vulkan/VulkanContext.h"
@@ -41,7 +44,6 @@ private:
     void mainLoop();
     void cleanup();
     void CheckInputs();
-
 
 
     Window window;
