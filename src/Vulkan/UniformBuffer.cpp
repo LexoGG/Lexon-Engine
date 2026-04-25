@@ -1,5 +1,6 @@
 ﻿#include "UniformBuffer.h"
-#include "../Renderer/StaticMesh.h"
+#include "../Renderer/SceneMaster.h"
+
 
 
 void UniformBuffer::createDescriptorSetLayout (VkDevice device) {
@@ -57,9 +58,13 @@ void UniformBuffer::updateUniformBuffer(uint32_t currentImage) {
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
     UniformBufferObject ubo{};
-    
 
-    StaticMesh::getModelMatrix(ubo.model);
+
+    if (!SceneMaster::SceneMesheslist.empty()) {
+        for(size_t i = 0; i < SceneMaster::SceneMesheslist.size(); ++i) {
+            SceneMaster::SceneMesheslist[i].getModelMatrix(ubo.model);  // temporal, solo el primero
+    }
+}
 
 
 

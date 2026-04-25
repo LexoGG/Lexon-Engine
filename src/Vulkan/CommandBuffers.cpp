@@ -1,6 +1,7 @@
 ﻿#include "CommandBuffers.h"
 #include <stdexcept>
 #include "../Core/Application.h"
+#include "../Renderer/SceneMaster.h"
 
 
 void CommandBuffers::init() {
@@ -92,25 +93,24 @@ void CommandBuffers::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t
     scissor.extent = { offscreen.GetWidth(), offscreen.GetHeight() }; // ← CAMBIADO
     vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
+    // ← NUEVO: Bind del descriptor de cámara una vez
+    VkDescriptorSet* descriptorSet = Descriptors::getdescriptorsetsIndex(SyncObjects::getCurrentFrame());
+
+    //DescriptordeCamara
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, Pipeline::getPipelineLayout(), 0, 1, descriptorSet, 0, nullptr);
+
+    // ← NUEVO: Renderizado múltiple usando SceneMaster
+    for (auto& mesh : SceneMaster::SceneMesheslist) {
+        mesh.Draw(commandBuffer, Pipeline::getPipelineLayout());
+    }
+
     VkBuffer vertexBuffers[] = { VertexBuffer::getBuffer() };
     VkDeviceSize offsets[] = { 0 };
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
     vkCmdBindIndexBuffer(commandBuffer, IndexBuffer::getIndexVertexCount(), 0, VK_INDEX_TYPE_UINT32);
 
-    VkDescriptorSet* descriptorSet =
-        Descriptors::getdescriptorsetsIndex(SyncObjects::getCurrentFrame());
-
-    vkCmdBindDescriptorSets(
-        commandBuffer,
-        VK_PIPELINE_BIND_POINT_GRAPHICS,
-        Pipeline::getPipelineLayout(),
-        0,
-        1,
-        descriptorSet, 
-        0,
-        nullptr
-    );
+    
 
     vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(LoaderModels::indices.size()), 1, 0, 0, 0);
 

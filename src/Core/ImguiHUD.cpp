@@ -38,7 +38,9 @@ void InitImgui() {
         if (ImGui::BeginMenu("File"))
         {
             if (ImGui::MenuItem("Load Model")) {
+
                 LoaderModels::loadModel("cubo", MODEL_PATHC);
+
             }
             if (ImGui::MenuItem("Exit")) { /* glfwSetWindowShouldClose */ }
             ImGui::EndMenu();
@@ -95,32 +97,31 @@ void InitImgui() {
 
     //ImGui::Separator();
     // ── Tus ventanas dockeables (puedes moverlas y pegarlas a los bordes) ──
+    static int selectedMeshIndex = 0;   // ← selección global
+
     ImGui::Begin("Scene Hierarchy");
-    
-
-    for (unsigned i = 0; i <= SceneMaster::SceneMesheslist.size()-1; i++){
-
-        ImGui::Selectable(SceneMaster::SceneMesheslist[i].name.c_str());
-
-
-        
-
-        };
-    //ImGui::Separator();
-    // Aquí irán los GameObjects más adelante
+    for (size_t i = 0; i < SceneMaster::SceneMesheslist.size(); ++i) {
+        bool isSelected = (i == selectedMeshIndex);
+        if (ImGui::Selectable(SceneMaster::SceneMesheslist[i].name.c_str(), isSelected)) {
+            selectedMeshIndex = (int)i;
+        }
+    }
     ImGui::End();
 
 
     ImGui::Begin("Inspector");
+    if (!SceneMaster::SceneMesheslist.empty() && selectedMeshIndex < SceneMaster::SceneMesheslist.size()) {
+        auto& mesh = SceneMaster::SceneMesheslist[selectedMeshIndex];
 
-    ImGui::DragFloat3("Posicion", StaticMesh::position);
-    ImGui::DragFloat3("Giro", StaticMesh::rotation);
-    ImGui::DragFloat3("Escala", StaticMesh::scale);
+        ImGui::DragFloat3("Posicion", mesh.position, 0.1f);
+        ImGui::DragFloat3("Giro", mesh.rotation, 1.0f);
+        ImGui::DragFloat3("Escala", mesh.scale, 0.1f);
 
-
-    ImGui::Text("Propiedades del objeto seleccionado");
-    ImGui::Separator();
-    // Transform, material, etc.
+        ImGui::Text("Objeto seleccionado: %s", mesh.name.c_str());
+    }
+    else {
+        ImGui::Text("No hay objetos en la escena");
+    }
     ImGui::End();
 
     ImGui::Begin("Console");

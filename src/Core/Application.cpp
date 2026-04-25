@@ -52,10 +52,16 @@ void Application::initVulkan() {
 
 
 
-
-
-
     loadermodel.loadModel("viking room", MODEL_PATH);
+    loadermodel.loadModel("viking room2", MODEL_PATH);
+    loadermodel.loadModel("viking room3", MODEL_PATH);
+
+
+
+
+
+
+
     textura.createTextureImage();
     textura.createTextureImageView();
     textura.createTextureSampler();
@@ -78,6 +84,7 @@ void Application::initVulkan() {
     std::cout << "Creando los semaforos" << std::endl;
     syncObjects.createSyncObjects();
 
+
     std::cout << "Inicializando ImGui" << std::endl;
     ImGuiVulkan::Init(context, swapchain, pipeline.getRenderPass());
 
@@ -94,6 +101,7 @@ void Application::mainLoop() {
         InitImgui();
         CheckInputs();
         window.pollEvents();
+
         syncObjects.drawFrame();
 
 
@@ -101,7 +109,7 @@ void Application::mainLoop() {
         static double lastTime = glfwGetTime();
         double currentTime = glfwGetTime();
         deltaTime = static_cast<float>(currentTime - lastTime);
-        std::cout << "Delta Time: " << deltaTime << std::endl;
+        //std::cout << "Delta Time: " << deltaTime << std::endl;
         lastTime = currentTime;
 
 

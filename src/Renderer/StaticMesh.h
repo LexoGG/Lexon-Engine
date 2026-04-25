@@ -7,14 +7,16 @@
 
 class StaticMesh {
 public:
-    std::string changeName(std::string newname);
-    static void getModelMatrix(glm::mat4 &model);
-    std::string name;
+    StaticMesh();
+    void Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout);
 
-    static float position[3];
-    //static glm::vec3 position;
-    static float rotation[3];
-    static float scale[3];
+    std::string changeName(std::string newname);
+     void getModelMatrix(glm::mat4 &model);
+     
+     std::string name;
+     float position[3];
+     float rotation[3];
+     float scale[3];
 
     std::vector<VkBuffer> uniformBuffers;
     std::vector<VkDeviceMemory> uniformBuffersMemory;

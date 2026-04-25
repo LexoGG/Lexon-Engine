@@ -2,7 +2,6 @@
 
 #include "../Core/Globals.h"
 #include "../Vulkan/Vertex.h"
-
 #include <stdexcept>
 
 

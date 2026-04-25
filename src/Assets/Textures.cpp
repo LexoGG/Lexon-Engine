@@ -68,7 +68,7 @@ void Textures::createTextureImageView() {
 }
 
 void Textures::createTextureSampler() {
-    // (tu código original está bien, solo lo dejo igual)
+
     VkPhysicalDeviceProperties properties{};
     vkGetPhysicalDeviceProperties(VulkanContext::getPhysicalDevice(), &properties);
 
@@ -103,7 +103,7 @@ VkImageView Textures::createImageView(VkImage image, VkFormat format, VkImageAsp
     viewInfo.format = format;
     viewInfo.subresourceRange.aspectMask = aspectFlags;
     viewInfo.subresourceRange.baseMipLevel = 0;
-    viewInfo.subresourceRange.levelCount = mipLevels;           // ← ahora usa mipLevels correcto
+    viewInfo.subresourceRange.levelCount = mipLevels;          
     viewInfo.subresourceRange.baseArrayLayer = 0;
     viewInfo.subresourceRange.layerCount = 1;
 
