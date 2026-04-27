@@ -1,5 +1,7 @@
 ﻿#include "../Renderer/SceneMaster.h"
 #include "ImguiHUD.h"
+#include "../../thirdparty/ImGuizmo-master/ImGuizmo.h"
+
 
 void InitImgui() {
 
@@ -113,9 +115,15 @@ void InitImgui() {
     if (!SceneMaster::SceneMesheslist.empty() && selectedMeshIndex < SceneMaster::SceneMesheslist.size()) {
         auto& mesh = SceneMaster::SceneMesheslist[selectedMeshIndex];
 
+        ImGui::SeparatorText(mesh.name.c_str());
+
+
         ImGui::DragFloat3("Posicion", mesh.position, 0.1f);
+        ImGui::DragFloat3("Camara", SceneMaster::CameraPositionInit, 0.1f);
+
         ImGui::DragFloat3("Giro", mesh.rotation, 1.0f);
         ImGui::DragFloat3("Escala", mesh.scale, 0.1f);
+
 
         ImGui::Text("Objeto seleccionado: %s", mesh.name.c_str());
     }

@@ -41,7 +41,7 @@ public:
     //static glm::vec3 CameraPositionInit;
     static glm::vec3 CameraDirectionInit;
     static float rotation[3];
-    static float CameraPositionInit[3];
+    //static float CameraPositionInit[3];
     //stglm::vec3 UniformBuffer::CameraPositionInit = glm::vec3(0.0f, 0.0f, 0.0f);
     //static glm::vec3 objectPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 
@@ -50,7 +50,9 @@ public:
 
 
 private:
-    static VkDescriptorSetLayout descriptorSetLayout;
+    static VkDescriptorSetLayout descriptorSetLayout;    
+    static VkDescriptorSetLayout descriptorSetLayoutTextures;
+
     static std::vector<VkBuffer> uniformBuffers;
     static std::vector<VkDeviceMemory> uniformBuffersMemory;
     VkDeviceSize bufferSize = sizeof(UniformBufferObject);

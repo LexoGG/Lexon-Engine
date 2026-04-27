@@ -4,8 +4,6 @@
 
 void Window::init() {
 
-    
-
     // Se inicializa la libreria de renderizado de ventanas GLFW
     glfwInit();
     

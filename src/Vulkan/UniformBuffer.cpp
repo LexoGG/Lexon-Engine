@@ -68,7 +68,7 @@ void UniformBuffer::updateUniformBuffer(uint32_t currentImage) {
 
 
 
-    glm::mat4 posmodelz = glm::lookAt(CameraDirectionInit, glm::vec3(CameraPositionInit[2]), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 posmodelz = glm::lookAt(glm::vec3(SceneMaster::CameraPositionInit[2]) * CameraDirectionInit+ CameraDirectionInit, glm::vec3(SceneMaster::CameraPositionInit[2])* CameraDirectionInit, glm::vec3(0.0f, 0.0f, 1.0f));
     ubo.view = posmodelz;
 
 
@@ -106,7 +106,6 @@ std::vector<VkBuffer> UniformBuffer::uniformBuffers;
 std::vector<void*> UniformBuffer::uniformBuffersMapped;
 std::vector<VkDeviceMemory> UniformBuffer::uniformBuffersMemory;
 float UniformBuffer::rotation[3] = { 0.0f, 0.0f, 0.0f };
-float UniformBuffer::CameraPositionInit[3] = {0.0f, 0.0f, 0.0f};
 glm::vec3 UniformBuffer::CameraDirectionInit = glm::vec3(2.0f, 2.0f, 2.0f);
 
 float UniformBuffer::objectPosition[3] = { 0.0f, 0.0f, 0.0f };

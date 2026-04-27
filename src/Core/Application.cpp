@@ -1,7 +1,6 @@
 // Application.cpp
 #include "Application.h"
 
-
 void Application::run() {
 
     // Se crea la ventana
@@ -27,6 +26,7 @@ void Application::initVulkan() {
 
 
     //createInstance
+    std::cout << "[!] Creando instancia: " << std::endl;
     context.createInstance();
 
     //    setupDebugMessenger(); createSurface(); pickPhysicalDevice(); createLogicalDevice();
@@ -52,9 +52,9 @@ void Application::initVulkan() {
 
 
 
+    // 3 copias del mismo modelo
     loadermodel.loadModel("viking room", MODEL_PATH);
-    loadermodel.loadModel("viking room2", MODEL_PATH);
-    loadermodel.loadModel("viking room3", MODEL_PATH);
+
 
 
 
@@ -69,9 +69,11 @@ void Application::initVulkan() {
     std::cout << "[!] Creando buffer de vertices: "<<std::endl;
     vertexBuffer.createVertexBuffer();
 
+
     std::cout << "[!] Cargando vertices: " << std::endl;
     indexBuffer.createIndexBuffer();
     std::cout << "\t[INFO] Vertices cargados: " << LoaderModels::vertices.size() << std::endl;
+    std::cout << "\t[INFO] Indices cargados: " << LoaderModels::indices.size() << std::endl;
 
     uniformbuffer.createUniformBuffers();
 
@@ -101,6 +103,7 @@ void Application::mainLoop() {
         InitImgui();
         CheckInputs();
         window.pollEvents();
+        
 
         syncObjects.drawFrame();
 
@@ -109,7 +112,6 @@ void Application::mainLoop() {
         static double lastTime = glfwGetTime();
         double currentTime = glfwGetTime();
         deltaTime = static_cast<float>(currentTime - lastTime);
-        //std::cout << "Delta Time: " << deltaTime << std::endl;
         lastTime = currentTime;
 
 
@@ -162,21 +164,6 @@ void Application::CheckInputs() {
     if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(Window::getGLFWwindow(), GLFW_TRUE);
     }
-
-    if (glfwGetKey(Window::getGLFWwindow(), GLFW_KEY_E) == GLFW_PRESS) {
-        std::cout << "Hola:" << LoaderModels::vertices.size() << std::endl;
-        for (size_t i = 0; i < LoaderModels::vertices.size(); ++i) {
-            ImpulsoejeY(LoaderModels::vertices[i].pos, -0.001f);
-            UniformBuffer::CameraPositionInit[2];
-        }
-
-    }
-
-
-
-
-
-
 
 }
 
