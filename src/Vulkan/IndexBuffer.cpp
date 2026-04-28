@@ -58,7 +58,7 @@ void IndexBuffer::createIndexBuffer()
 }
 
 void IndexBuffer::bindIndex(VkCommandBuffer commandBuffer) {
-    vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+    //vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 }
 
 void IndexBuffer::destroy(VkDevice device) {

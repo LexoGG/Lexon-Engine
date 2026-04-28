@@ -53,9 +53,18 @@ void Application::initVulkan() {
 
 
     // 3 copias del mismo modelo
+    Vertex X;
+    X.pos = { 0,0,0 };
     loadermodel.loadModel("viking room", MODEL_PATH);
+    X.pos = { 5,0,0 };
+
+    loadermodel.loadModel("viking roo2m", MODEL_PATH);
 
 
+    for (int i = 3; i <= 10; i++) {
+        //loadermodel.loadModel("a", MODEL_PATH);
+
+    }
 
 
 
@@ -100,19 +109,21 @@ void Application::mainLoop() {
 
     while (!window.shouldClose()) {
 
+
+
+
         InitImgui();
         CheckInputs();
         window.pollEvents();
-        
-
+    
         syncObjects.drawFrame();
 
 
-        // === CÁLCULO DEL DELTA TIME ===
         static double lastTime = glfwGetTime();
         double currentTime = glfwGetTime();
         deltaTime = static_cast<float>(currentTime - lastTime);
         lastTime = currentTime;
+
 
 
 
@@ -165,8 +176,48 @@ void Application::CheckInputs() {
         glfwSetWindowShouldClose(Window::getGLFWwindow(), GLFW_TRUE);
     }
 
+
+
 }
 
+void Application::updatemovement(float dt) {
+
+    if (SceneMaster::selectedIndex.size() < 0 || SceneMaster::selectedIndex.size() >= static_cast<int>(SceneMaster::SceneMesheslist.size())) {
+        return;
+    }
+
+    else {
+        for (size_t i = 0; i < SceneMaster::selectedIndex.size(); ++i) {
+            auto& mesh = SceneMaster::SceneMesheslist[i];
+
+        }
+
+
+    for (int i = 0; i < SceneMaster::selectedIndex.size(); i++) {
+
+        StaticMesh& obj = SceneMaster::SceneMesheslist[SceneMaster::selectedIndex[i]];
+            float speed = 10.0f * dt;   // ajusta a tu gusto
+
+        
+        // Movimiento WASD + flechas (o lo que uses)
+        if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_W) == GLFW_PRESS) obj.transform.position.z -= speed;
+        if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_S) == GLFW_PRESS) obj.transform.position.z += speed;
+        if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_A) == GLFW_PRESS) obj.transform.position.x -= speed;
+        if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_D) == GLFW_PRESS) obj.transform.position.x += speed;
+        if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_Q) == GLFW_PRESS) obj.transform.position.y -= speed;
+        if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_E) == GLFW_PRESS) obj.transform.position.y += speed;
+
+        // Rotación ejemplo (ratón o teclas)
+        if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_LEFT) == GLFW_PRESS)  obj.transform.rotation.y -= 50.0f * dt;
+        if (glfwGetKey(window.getGLFWwindow(), GLFW_KEY_RIGHT) == GLFW_PRESS) obj.transform.rotation.y += 50.0f * dt;
+
+    }
+
+
+    }
+
+
+}
 
 
 // Definición del miembro estático

@@ -15,11 +15,21 @@ void LoaderModels::loadModel(std::string newname, std::string MODEL_PATH) {
         throw std::runtime_error(err);
     }
 
+    // Crear el nuevo mesh con su propio nombre y transform
     StaticMesh mesh;
     mesh.changeName(newname);
+
+    // ←←← AQUÍ ESTABA EL BUG: nunca se ponía el indexCount
+    mesh.indexCount = static_cast<uint32_t>(LoaderModels::indices.size());  // se actualizará abajo
+
+    // Añadirlo a la escena (ahora sí tiene datos)
     SceneMaster::AddMeshToList(mesh);
 
+    // Cargar la geometría (global por ahora)
     std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+
+    LoaderModels::vertices.clear();   // ← importante: limpia lo anterior
+    LoaderModels::indices.clear();
 
     for (const auto& shape : shapes) {
         for (const auto& index : shape.mesh.indices) {
@@ -39,13 +49,22 @@ void LoaderModels::loadModel(std::string newname, std::string MODEL_PATH) {
             vertex.color = { 1.0f, 1.0f, 1.0f };
 
             if (uniqueVertices.count(vertex) == 0) {
-                uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
-                vertices.push_back(vertex);
+                uniqueVertices[vertex] = static_cast<uint32_t>(LoaderModels::vertices.size());
+                LoaderModels::vertices.push_back(vertex);
             }
 
-            indices.push_back(uniqueVertices[vertex]);
+            LoaderModels::indices.push_back(uniqueVertices[vertex]);
         }
     }
+
+    // Actualizar el indexCount del último mesh añadido (el que acabamos de crear)
+    if (!SceneMaster::SceneMesheslist.empty()) {
+        SceneMaster::SceneMesheslist.back().indexCount = static_cast<uint32_t>(LoaderModels::indices.size());
+    }
+
+    std::cout << "[LoaderModels] Cargado: " << newname 
+              << " | Vertices: " << LoaderModels::vertices.size()
+              << " | Indices: " << LoaderModels::indices.size() << std::endl;
 }
 
 std::vector<Vertex> LoaderModels::vertices;

@@ -3,12 +3,13 @@
 // StaticMesh.h
 #include "../Vulkan/VulkanContext.h"
 #include "../Vulkan/UniformBuffer.h"
-
+#include "Transform.h"
 
 class StaticMesh {
 public:
     StaticMesh();
     void Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout);
+    void createBuffers(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
 
     std::string changeName(std::string newname);
      void getModelMatrix(glm::mat4 &model);
@@ -35,6 +36,7 @@ public:
 
     VkDescriptorSet descriptorsets;
     uint32_t indexCount = 0;
+    Transform transform;
 
 
 };

@@ -17,8 +17,8 @@
 #include "../Vulkan/DephtBuffer.h"  
 #include "../Math/MatrixCalc.h"
 #include "../Renderer/OffscreenRenderer.h"
-
-
+#include "../Renderer/SceneMaster.h"
+#include "../Vulkan/Vertex.h"
 
 #include "../Assets/Square.h"
 #include "../Assets/Textures.h"
@@ -38,6 +38,7 @@ public:
     void run();
     static OffscreenRenderer& GetOffscreenRenderer() { return offscreenRenderer; }
     static float deltaTime;
+    void updatemovement(float dt);
 
 
 private:
