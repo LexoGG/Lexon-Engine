@@ -41,7 +41,7 @@ void InitImgui() {
         {
             if (ImGui::MenuItem("Load Model")) {
 
-                //LoaderModels::loadModel("cubo", MODEL_PATHC);
+                LoaderModels::loadModel("cubo", MODEL_PATHC);
 
             }
             if (ImGui::MenuItem("Exit")) { /* glfwSetWindowShouldClose */ }
@@ -99,14 +99,13 @@ void InitImgui() {
 
     //ImGui::Separator();
     // ── Tus ventanas dockeables (puedes moverlas y pegarlas a los bordes) ──
-    static int selectedMeshIndex = -0;   // ← selección global
+    static int selectedMeshIndex = 0;   // ← selección global
 
     ImGui::Begin("Scene Hierarchy");
     for (size_t i = 0; i < SceneMaster::SceneMesheslist.size(); ++i) {
         bool isSelected = (i == selectedMeshIndex);
         if (ImGui::Selectable(SceneMaster::SceneMesheslist[i].name.c_str(), isSelected)) {
             selectedMeshIndex = (int)i;
-            SceneMaster::selectedIndex.push_back(i);
         }
     }
     ImGui::End();
