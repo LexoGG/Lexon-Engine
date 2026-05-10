@@ -15,14 +15,12 @@ void LoaderModels::loadModel(std::string newname, std::string MODEL_PATH) {
         throw std::runtime_error(err);
     }
 
-    StaticMesh mesh;
-    mesh.changeName(newname);
-    SceneMaster::AddMeshToList(mesh);
-
+    StaticMesh meshe;
+    UniformBufferObject buffermodel;
+    meshe.changeName(newname);
+    
+    buffermodel.model;
     std::unordered_map<Vertex, uint32_t> uniqueVertices{};
-
-    LoaderModels::vertices.clear();   // ← importante: limpia lo anterior
-    LoaderModels::indices.clear();
 
     for (const auto& shape : shapes) {
         for (const auto& index : shape.mesh.indices) {
@@ -42,18 +40,16 @@ void LoaderModels::loadModel(std::string newname, std::string MODEL_PATH) {
             vertex.color = { 1.0f, 1.0f, 1.0f };
 
             if (uniqueVertices.count(vertex) == 0) {
-                uniqueVertices[vertex] = static_cast<uint32_t>(LoaderModels::vertices.size());
-                LoaderModels::vertices.push_back(vertex);
+                uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+                vertices.push_back(vertex);
             }
 
-            LoaderModels::indices.push_back(uniqueVertices[vertex]);
+            indices.push_back(uniqueVertices[vertex]);
         }
     }
+    SceneMaster::AddMeshToList(meshe);
 
-    // Actualizar el indexCount del último mesh añadido (el que acabamos de crear)
-    if (!SceneMaster::SceneMesheslist.empty()) {
-        SceneMaster::SceneMesheslist.back().indexCount = static_cast<uint32_t>(LoaderModels::indices.size());
-    }
+    
 }
 
 
