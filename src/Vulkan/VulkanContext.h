@@ -29,6 +29,7 @@ struct SwapChainSupportDetails {
 class VulkanContext {
 public:
     void createInstance();
+    void GetInstanceVersion();
     void init();
     void cleanup();
 

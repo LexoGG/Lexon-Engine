@@ -60,9 +60,25 @@ VkQueue VulkanContext::getGraphicsQueue()   { return graphicsQueue; }
 
 VkQueue VulkanContext::getPresentQueue()   { return presentQueue; }
 
+void VulkanContext::GetInstanceVersion() {
 
+    uint32_t InstanceVersion = 0;
+
+    VkResult res = vkEnumerateInstanceVersion(&InstanceVersion);
+    if (!res) {
+
+        m_instanceVersion.Major = VK_API_VERSION_MAJOR(InstanceVersion);
+        m_instanceVersion.Minor = VK_API_VERSION_MINOR(InstanceVersion);
+        m_instanceVersion.Patch = VK_API_VERSION_PATCH(InstanceVersion);
+
+        printf("Vulkan loader supports version %d.%d.%d\n",
+            m_instanceVersion.Major, m_instanceVersion.Minor, m_instanceVersion.Patch);
+    }
+}
 
 void VulkanContext::createInstance() {
+
+    GetInstanceVersion();
 
     if (enableValidationLayers && !checkValidationLayerSupport()) {
         throw std::runtime_error("validation layers requested, but not available!");
@@ -74,7 +90,7 @@ void VulkanContext::createInstance() {
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.pEngineName = "Lexon";
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.apiVersion = VK_API_VERSION_1_0;
+    appInfo.apiVersion = VK_MAKE_API_VERSION(0, m_instanceVersion.Major, m_instanceVersion.Minor, m_instanceVersion.Patch);
 
     VkInstanceCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -192,7 +208,7 @@ void VulkanContext::createLogicalDevice() {
 
     VkPhysicalDeviceDynamicRenderingFeaturesKHR DynamicRenderingFeature = {
         .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR,
-        .pNext = &DescriptorSetIndexingFeatures,
+        .pNext = NULL,
         .dynamicRendering = VK_TRUE
     };
 
@@ -212,6 +228,8 @@ void VulkanContext::createLogicalDevice() {
     else {
         createInfo.enabledLayerCount = 0;
     }
+
+    bool DeviceSupportsDynamicRendering = 0;
 
     if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
         throw std::runtime_error("failed to create logical device!");
@@ -304,7 +322,7 @@ std::vector<const char*> VulkanContext::getRequiredExtensions() {
 
 
 
-VkSurfaceKHR* VulkanContext::getSurfacePointer() { return &surface; }
+VkSurfaceKHR* VulkanContext::getSurfacePointer() { return &surface; };
 
 VkDevice VulkanContext::device = VK_NULL_HANDLE;
 VkInstance VulkanContext::instance = VK_NULL_HANDLE;
@@ -347,6 +365,11 @@ bool VulkanContext::checkDeviceExtensionSupport(VkPhysicalDevice device) {
 
     std::vector<VkExtensionProperties> availableExtensions(extensionCount);
     vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+    printf("Physical device extensions:\n");
+    for (const VkExtensionProperties& e : availableExtensions) {
+        printf("    %s\n", e.extensionName);
+    }
 
     std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 

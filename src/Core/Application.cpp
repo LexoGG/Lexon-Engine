@@ -55,7 +55,8 @@ void Application::initVulkan() {
     // 3 copias del mismo modelo
     loadermodel.loadModel("viking room", MODEL_PATH);
 
-
+    loadermodel.loadModel("viking roo2m", MODEL_PATH);
+    
 
 
 
@@ -103,10 +104,18 @@ void Application::mainLoop() {
         InitImgui();
         CheckInputs();
         window.pollEvents();
-        
+
+
+                auto& mesh = SceneMaster::SceneMesheslist[SceneMaster::selectedMeshIndex];
+               // std::cout << "numero de veces:" << SceneMaster::selectedMeshIndex << std::endl;
+                mesh.getModelMatrix(mesh.ubo.model);
+                mesh.Draw(commandBuffers.getCommandBuffer(SyncObjects::getCurrentFrame()), pipeline.getPipelineLayout());
+
+
+                uniformbuffer.updateUniformBuffer(SyncObjects::getCurrentFrame(), mesh.ubo);
+
 
         syncObjects.drawFrame();
-
 
         // === CÁLCULO DEL DELTA TIME ===
         static double lastTime = glfwGetTime();

@@ -1,22 +1,28 @@
 ﻿
-
+#pragma once
 // StaticMesh.h
 #include "../Vulkan/VulkanContext.h"
 #include "../Vulkan/UniformBuffer.h"
 
-
 class StaticMesh {
 public:
     StaticMesh();
-    void Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout);
 
+
+    glm::mat4 model;
+    std::string name;
+
+    void Draw(VkCommandBuffer commandBuffer, VkPipelineLayout pipelineLayout);
     std::string changeName(std::string newname);
-     void getModelMatrix(glm::mat4 &model);
-     
-     std::string name;
+    void getModelMatrix(glm::mat4 &model);
+
      float position[3];
      float rotation[3];
      float scale[3];
+
+     UniformBufferObject ubo{};
+     void* uniformMapped = nullptr;   // Para mapping persistente
+
 
     std::vector<VkBuffer> uniformBuffers;
     std::vector<VkDeviceMemory> uniformBuffersMemory;

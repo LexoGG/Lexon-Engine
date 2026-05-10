@@ -48,7 +48,7 @@ void SyncObjects::drawFrame() {
         throw std::runtime_error("failed to acquire swap chain image!");
     }
 
-	UniformBuffer::updateUniformBuffer(currentFrame);
+	//UniformBuffer::updateUniformBuffer(currentFrame);
 
 
     vkResetFences(VulkanContext::getDevice(), 1, &inFlightFences[currentFrame]);

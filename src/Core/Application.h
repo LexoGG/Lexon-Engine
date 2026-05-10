@@ -17,6 +17,7 @@
 #include "../Vulkan/DephtBuffer.h"  
 #include "../Math/MatrixCalc.h"
 #include "../Renderer/OffscreenRenderer.h"
+#include "../Renderer/SceneMaster.h"
 
 
 
@@ -35,8 +36,19 @@
 
 class Application {
 public:
+
+    Application() {
+
+    }
+
+    ~Application() {
+
+    }
+
     void run();
+
     static OffscreenRenderer& GetOffscreenRenderer() { return offscreenRenderer; }
+
     static float deltaTime;
 
 

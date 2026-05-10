@@ -24,12 +24,13 @@ struct UniformBufferObject {
     alignas(16) glm::mat4 proj;
 };
 
+
 class UniformBuffer {
 
 public:
     static void createDescriptorSetLayout(VkDevice device);
-    void createUniformBuffers();
-    static void updateUniformBuffer(uint32_t currentImage);
+    static void createUniformBuffers();
+    static void updateUniformBuffer(uint32_t currentImage, UniformBufferObject &ubo);
     static VkDescriptorSetLayout getdescriptorset();
     static VkDescriptorSetLayout* getdescriptorsetPointer();
 

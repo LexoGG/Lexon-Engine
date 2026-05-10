@@ -1,4 +1,6 @@
+# Minimo de version de cmake compatible
 cmake_minimum_required(VERSION 3.22)
+
 project(Lexon-Engine LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)

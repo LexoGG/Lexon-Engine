@@ -1,6 +1,6 @@
 ﻿#include "UniformBuffer.h"
 #include "../Renderer/SceneMaster.h"
-
+#include "../Core/ImguiHUD.h"
 
 
 void UniformBuffer::createDescriptorSetLayout (VkDevice device) {
@@ -39,6 +39,23 @@ void UniformBuffer::destroyDescriptorSet(VkDevice device) {
 void UniformBuffer::createUniformBuffers() {
     VkDeviceSize bufferSize = sizeof(UniformBufferObject);
 
+    for (auto& mesh : SceneMaster::SceneMesheslist) {
+        mesh.uniformBuffers.clear();
+        mesh.uniformBuffersMemory.clear();
+        mesh.uniformBuffersMapped.clear();
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+
+            VkBuffer buffer({});
+            VkDeviceMemory bufferMem({});
+            BufferUtils::createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                buffer, bufferMem);
+            mesh.uniformBuffers.emplace_back(std::move(buffer));
+            mesh.uniformBuffersMemory.emplace_back(std::move(bufferMem));
+            //mesh.uniformBuffersMapped.emplace_back(mesh.uniformBuffersMemory[i].mapMemory(0, bufferSize));
+        }
+    }
+
     uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
     uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
     uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
@@ -51,24 +68,22 @@ void UniformBuffer::createUniformBuffers() {
 }
 
 
-void UniformBuffer::updateUniformBuffer(uint32_t currentImage) {
+void UniformBuffer::updateUniformBuffer(uint32_t currentImage, UniformBufferObject &ubo) {
     static auto startTime = std::chrono::high_resolution_clock::now();
 
     auto currentTime = std::chrono::high_resolution_clock::now();
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-    UniformBufferObject ubo{};
 
 
     if (!SceneMaster::SceneMesheslist.empty()) {
-        for(size_t i = 0; i < SceneMaster::SceneMesheslist.size(); ++i) {
+        for (size_t i = 0; i < SceneMaster::SceneMesheslist.size(); ++i) {
             SceneMaster::SceneMesheslist[i].getModelMatrix(ubo.model);  // temporal, solo el primero
+        }
     }
-}
 
 
-
-    glm::mat4 posmodelz = glm::lookAt(glm::vec3(SceneMaster::CameraPositionInit[2]) * CameraDirectionInit+ CameraDirectionInit, glm::vec3(SceneMaster::CameraPositionInit[2])* CameraDirectionInit, glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 posmodelz = glm::lookAt(glm::vec3(SceneMaster::CameraPositionInit[2]) * CameraDirectionInit + CameraDirectionInit, glm::vec3(SceneMaster::CameraPositionInit[2]) * CameraDirectionInit, glm::vec3(0.0f, 0.0f, 1.0f));
     ubo.view = posmodelz;
 
 
@@ -76,7 +91,12 @@ void UniformBuffer::updateUniformBuffer(uint32_t currentImage) {
     ubo.proj[1][1] *= -1;
 
     memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+
+
+
+
 }
+
 
 VkDescriptorSetLayout UniformBuffer::getdescriptorset() {
     return descriptorSetLayout;

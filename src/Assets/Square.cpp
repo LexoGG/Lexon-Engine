@@ -15,10 +15,11 @@ void LoaderModels::loadModel(std::string newname, std::string MODEL_PATH) {
         throw std::runtime_error(err);
     }
 
-    StaticMesh mesh;
-    mesh.changeName(newname);
-    SceneMaster::AddMeshToList(mesh);
-
+    StaticMesh meshe;
+    UniformBufferObject buffermodel;
+    meshe.changeName(newname);
+    
+    buffermodel.model;
     std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 
     for (const auto& shape : shapes) {
@@ -46,7 +47,12 @@ void LoaderModels::loadModel(std::string newname, std::string MODEL_PATH) {
             indices.push_back(uniqueVertices[vertex]);
         }
     }
+    SceneMaster::AddMeshToList(meshe);
+
+    
 }
+
+
 
 std::vector<Vertex> LoaderModels::vertices;
 std::vector<uint32_t> LoaderModels::indices;

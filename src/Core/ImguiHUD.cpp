@@ -81,10 +81,19 @@ void InitImgui() {
     
     static bool ventanaSaludoAbierta = true;
     if (ventanaSaludoAbierta) {
-        if (ImGui::Begin("Hola Mundo", &ventanaSaludoAbierta), ImGuiWindowFlags_NoTitleBar) {
+        if (ImGui::Begin("Informacion", &ventanaSaludoAbierta), ImGuiWindowFlags_NoTitleBar) {
+            float counter = 0.0f;
 
-            ImGui::Text("Delta Time: (%g)", Application::deltaTime);
-            ImGui::Text("FPS: (%g)", 1.0f/Application::deltaTime);
+            if (counter <= 100.0f) {
+                float valuedeltatime = Application::deltaTime;
+                ImGui::Text("Delta Time: (%g)", valuedeltatime);
+                ImGui::Text("FPS: (%g)", 1.0f / valuedeltatime);
+                
+            }
+            else {
+                counter = counter + Application::deltaTime;
+            }
+
 
 
             if (ImGui::Button("Boton")) {
@@ -99,21 +108,20 @@ void InitImgui() {
 
     //ImGui::Separator();
     // ── Tus ventanas dockeables (puedes moverlas y pegarlas a los bordes) ──
-    static int selectedMeshIndex = 0;   // ← selección global
 
     ImGui::Begin("Scene Hierarchy");
     for (size_t i = 0; i < SceneMaster::SceneMesheslist.size(); ++i) {
-        bool isSelected = (i == selectedMeshIndex);
+        bool isSelected = (i == SceneMaster::selectedMeshIndex);
         if (ImGui::Selectable(SceneMaster::SceneMesheslist[i].name.c_str(), isSelected)) {
-            selectedMeshIndex = (int)i;
+            SceneMaster::selectedMeshIndex = (int)i;
         }
     }
     ImGui::End();
 
 
     ImGui::Begin("Inspector");
-    if (!SceneMaster::SceneMesheslist.empty() && selectedMeshIndex < SceneMaster::SceneMesheslist.size()) {
-        auto& mesh = SceneMaster::SceneMesheslist[selectedMeshIndex];
+    if (!SceneMaster::SceneMesheslist.empty() && SceneMaster::selectedMeshIndex < SceneMaster::SceneMesheslist.size()) {
+        auto& mesh = SceneMaster::SceneMesheslist[SceneMaster::selectedMeshIndex];
 
         ImGui::SeparatorText(mesh.name.c_str());
 

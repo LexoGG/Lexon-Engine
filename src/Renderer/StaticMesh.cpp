@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿#include "SceneMaster.h"
+
 #include "StaticMesh.h"
 
 StaticMesh::StaticMesh() {
@@ -31,7 +32,8 @@ void StaticMesh::getModelMatrix(glm::mat4 &model) {
     //escalado
     glm::mat4 modelscale = glm::scale(glm::mat4(1.0f), objectScalevec);
 
-    model = modeltr * modelx * modely * modelz * modelscale;
+    model = modelscale * modelx * modely * modelz * modeltr;
+
 
 
 }

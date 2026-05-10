@@ -24,5 +24,4 @@ private:
     std::vector<VkFence> inFlightFences;
     
     static uint32_t currentFrame;
-    //uint32_t frameIndex = currentFrame;
 };

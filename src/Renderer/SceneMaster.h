@@ -12,6 +12,10 @@ public:
 	static float CameraPositionInit[3];
 	static void AddMeshToList(StaticMesh mesh);
 
+	static int selectedMeshIndex;   // selección global
+	static std::vector<UniformBufferObject> UniformObjectslist;
+
+
 private:
 
 
