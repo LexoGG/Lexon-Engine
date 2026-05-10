@@ -41,9 +41,9 @@ void VertexBuffer::destroy() {
 }
 
 void VertexBuffer::bind(VkCommandBuffer commandBuffer) {
-    VkBuffer vertexBuffers[] = { vertexBuffer };
-    VkDeviceSize offsets[] = { 0 };
-    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+    //VkBuffer vertexBuffers[] = { vertexBuffer };
+    //VkDeviceSize offsets[] = { 0 };
+    //vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 }
 
 void VertexBuffer::update() {
